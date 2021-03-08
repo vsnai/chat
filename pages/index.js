@@ -1,233 +1,111 @@
-import Head from 'next/head'
-import { connectToDatabase } from '../util/mongodb'
+import { useState } from 'react';
+import { useRouter } from 'next/router'
 
-export default function Home({ isConnected }) {
+import { connectToDatabase } from '../util/mongodb';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+import Nav from '../components/nav';
+
+export default function Home({ user, tweets }) {
+  dayjs.extend(relativeTime);
+  const router = useRouter();
+
+  const [tweetBody, setTweetBody] = useState('');
+
+  async function add () {
+    const res = await fetch('/api/tweet', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: user._id,
+        tweetBody
+      })
+    });
+
+    if (res.status === 201) {
+      router.reload();
+    }
+  }
+
+  async function remove (tweet) {
+    const res = await fetch('/api/tweet', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tweet
+      })
+    });
+
+    if (res.status === 204) {
+      router.reload();
+    }
+  }
+
   return (
-    <div className="container">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <>
+      <Nav user={user} />
 
-      <main>
-        <h1 className="title">
-          Welcome to <a href="https://nextjs.org">Next.js with MongoDB!</a>
-        </h1>
+      <div className="flex flex-col items-center">
+        <div className="flex justify-between w-1/2 my-4">
+          <input
+            className="flex-auto px-4 py-2 border mr-4"
+            type="text"
+            placeholder="My post"
+            onChange={e => setTweetBody(e.target.value)}
+          />
 
-        {isConnected ? (
-          <h2 className="subtitle">You are connected to MongoDB</h2>
-        ) : (
-          <h2 className="subtitle">
-            You are NOT connected to MongoDB. Check the <code>README.md</code>{' '}
-            for instructions.
-          </h2>
-        )}
-
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
-
-        <div className="grid">
-          <a href="https://nextjs.org/docs" className="card">
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className="card">
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="card"
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="card"
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+          <button
+            onClick={() => add()}
+            className="flex-none px-4 py-2 bg-black text-white hover:bg-white hover:text-black border border-black"
+          >Add</button>
         </div>
-      </main>
 
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
-        </a>
-      </footer>
+        {tweets.length > 0 && tweets.map(tweet => {
+          return <div
+            key={tweet._id}
+            className='flex justify-between items-center w-1/2 p-8 border-b hover:bg-gray-50'
+          >
+            <div className="flex flex-auto">
+              <img className="w-12 h-12 rounded-full" src={user.avatar} />
 
-      <style jsx>{`
-        .container {
-          min-height: 100vh;
-          padding: 0 0.5rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
+              <div className="flex flex-col ml-4">
+                <div className="flex items-center">
+                  <div className="font-bold">{user.username}</div>
+                  <div className="ml-2 text-xs text-gray-300">
+                    {tweet.updated_at !== null
+                      ? `${dayjs(tweet.updated_at).fromNow()} (edited)`
+                      : dayjs(tweet.inserted_at).fromNow()
+                    }
+                  </div>
+                </div>
 
-        main {
-          padding: 5rem 0;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
+                <div className="my-2">{tweet.body}</div>
 
-        footer {
-          width: 100%;
-          height: 100px;
-          border-top: 1px solid #eaeaea;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        footer img {
-          margin-left: 0.5rem;
-        }
-
-        footer a {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        a {
-          color: inherit;
-          text-decoration: none;
-        }
-
-        .title a {
-          color: #0070f3;
-          text-decoration: none;
-        }
-
-        .title a:hover,
-        .title a:focus,
-        .title a:active {
-          text-decoration: underline;
-        }
-
-        .title {
-          margin: 0;
-          line-height: 1.15;
-          font-size: 4rem;
-        }
-
-        .title,
-        .description {
-          text-align: center;
-        }
-
-        .subtitle {
-          font-size: 2rem;
-        }
-
-        .description {
-          line-height: 1.5;
-          font-size: 1.5rem;
-        }
-
-        code {
-          background: #fafafa;
-          border-radius: 5px;
-          padding: 0.75rem;
-          font-size: 1.1rem;
-          font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-            DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-        }
-
-        .grid {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-wrap: wrap;
-
-          max-width: 800px;
-          margin-top: 3rem;
-        }
-
-        .card {
-          margin: 1rem;
-          flex-basis: 45%;
-          padding: 1.5rem;
-          text-align: left;
-          color: inherit;
-          text-decoration: none;
-          border: 1px solid #eaeaea;
-          border-radius: 10px;
-          transition: color 0.15s ease, border-color 0.15s ease;
-        }
-
-        .card:hover,
-        .card:focus,
-        .card:active {
-          color: #0070f3;
-          border-color: #0070f3;
-        }
-
-        .card h3 {
-          margin: 0 0 1rem 0;
-          font-size: 1.5rem;
-        }
-
-        .card p {
-          margin: 0;
-          font-size: 1.25rem;
-          line-height: 1.5;
-        }
-
-        .logo {
-          height: 1em;
-        }
-
-        @media (max-width: 600px) {
-          .grid {
-            width: 100%;
-            flex-direction: column;
-          }
-        }
-      `}</style>
-
-      <style jsx global>{`
-        html,
-        body {
-          padding: 0;
-          margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
-        }
-
-        * {
-          box-sizing: border-box;
-        }
-      `}</style>
-    </div>
-  )
+                <div className="flex space-x-2">
+                  <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => router.push(`/tweets/${tweet._id}`)}>Show</button>
+                  <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => router.push(`/tweets/${tweet._id}/edit`)}>Edit</button>
+                  <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => remove(tweet)}>Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        })}
+      </div>
+    </>
+  );
 }
 
-export async function getServerSideProps(context) {
-  const { client } = await connectToDatabase()
+export async function getServerSideProps() {
+  const { db } = await connectToDatabase();
 
-  const isConnected = await client.isConnected()
+  const user = await db.collection('users').findOne({ username: "Phoebe" });
+  const tweets = await db.collection('tweets').find({ user_id: user._id }).sort( { _id: -1 } ).toArray();
 
   return {
-    props: { isConnected },
-  }
+    props: {
+      user: JSON.parse(JSON.stringify(user)),
+      tweets: JSON.parse(JSON.stringify(tweets)),
+    }
+  };
 }

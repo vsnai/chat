@@ -7,10 +7,16 @@
     "start": "next start"
   },
   "dependencies": {
+    "dayjs": "^1.10.4",
     "mongodb": "^3.5.9",
     "next": "latest",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "^10.2.4",
+    "postcss": "^8.2.7",
+    "tailwindcss": "^2.0.3"
+  }
 }
