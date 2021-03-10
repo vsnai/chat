@@ -47,7 +47,7 @@ export default function Tweet({ user, tweet }) {
               <div className="my-2">{tweet.content}</div>
 
               <div className="flex space-x-2">
-                <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => router.push(`/tweets/${tweet._id}/edit`)}>Edit</button>
+                <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => {}}>Edit</button>
                 <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => remove(tweet)}>Delete</button>
               </div>
             </div>
@@ -61,7 +61,7 @@ export default function Tweet({ user, tweet }) {
 export async function getServerSideProps({ query }) {
   const { db } = await connectToDatabase();
   
-  const user = await db.collection('users').findOne({ username: "Phoebe" });
+  const user = await db.collection('users').findOne();
   const tweet = await db.collection('tweets').findOne({ _id: ObjectId(query.id) });
 
   return {

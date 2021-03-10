@@ -7,7 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 
 import Nav from '../../components/nav';
 
-export default function Home({ user, tweets }) {
+export default function Tweet({ user, tweets }) {
   dayjs.extend(relativeTime);
   const router = useRouter();
 
@@ -109,7 +109,7 @@ export default function Home({ user, tweets }) {
                 <div className="my-2">{tweet.content}</div>
 
                 <div className="flex space-x-2">
-                  <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => router.push(`/tweets/${tweet._id}`)}>Show</button>
+                  <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => router.push(`/tweet/${tweet._id}`)}>Show</button>
                   <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => enterEditMode(tweet)}>Edit</button>
                   <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => remove(tweet) }>Delete</button>
                 </div>
@@ -125,7 +125,7 @@ export default function Home({ user, tweets }) {
 export async function getServerSideProps() {
   const { db } = await connectToDatabase();
 
-  const user = await db.collection('users').findOne({ username: "Phoebe" });
+  const user = await db.collection('users').findOne();
   const tweets = await db.collection('tweets').find({ user_id: user._id }).sort( { _id: -1 } ).toArray();
 
   return {
