@@ -44,7 +44,7 @@ export default function Tweet({ user, tweet }) {
                 </div>
               </div>
 
-              <div className="my-2">{tweet.body}</div>
+              <div className="my-2">{tweet.content}</div>
 
               <div className="flex space-x-2">
                 <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => router.push(`/tweets/${tweet._id}/edit`)}>Edit</button>

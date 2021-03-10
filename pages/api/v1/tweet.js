@@ -1,15 +1,15 @@
 import { ObjectId } from 'mongodb';
-import { connectToDatabase } from "../../util/mongodb";
+import { connectToDatabase } from '../../../util/mongodb';
 
 export default async (req, res) => {
   if (req.method === 'POST') {
     const { db } = await connectToDatabase();
 
-    const { userId, tweetBody } = req.body;
+    const { user, tweet } = req.body;
 
     await db.collection('tweets').insertOne({
-      user_id: ObjectId(userId),
-      body: tweetBody,
+      user_id: ObjectId(user._id),
+      content: tweet.content,
       inserted_at: new Date(),
       updated_at: null
     });
@@ -18,20 +18,20 @@ export default async (req, res) => {
   } else if (req.method === 'PUT') {
     const { db } = await connectToDatabase();
 
-    const { userId, tweetId, tweetBody } = req.body;
+    const { user, tweet } = req.body;
 
     await db.collection('tweets').findOneAndUpdate(
-      { "_id": ObjectId(tweetId) },
-      { $set: { body: tweetBody, updated_at: new Date() } }
+      { _id: ObjectId(tweet._id) },
+      { $set: { content: tweet.content, updated_at: new Date() } }
     );
 
     res.status(200).json({});
   } else if (req.method === 'DELETE') {
     const { db } = await connectToDatabase();
 
-    const { tweet } = req.body;
+    const { user, tweet } = req.body;
 
-    await db.collection('tweets').deleteOne({"_id": ObjectId(tweet._id)});
+    await db.collection('tweets').deleteOne({_id: ObjectId(tweet._id)});
 
     res.status(204).json({});
   }
