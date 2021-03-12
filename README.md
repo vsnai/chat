@@ -2,6 +2,8 @@
 
 [x] profile page
 [x] search
+
+[ ] light authentication
 [ ] following
 
 [ ] liking

@@ -70,7 +70,6 @@ export default function Tweet({ user, tweets }) {
         <Search query={router.query.q} />
       </div>
 
-
       <div className="flex flex-col items-center">
         <div className="flex justify-between w-1/2 my-4">
           <input

@@ -6,7 +6,8 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import { connectToDatabase } from '../../util/mongodb';
-import Nav from '../../components/nav'
+import Nav from '../../components/nav';
+import Search from '../../components/search';
 
 export default function Tweet({ user, tweet }) {
   dayjs.extend(relativeTime);
@@ -26,7 +27,10 @@ export default function Tweet({ user, tweet }) {
 
   return (
     <>
-      <Nav user={user} />
+      <div className="flex container justify-between mx-auto my-2">
+        <Nav user={user} />
+        <Search query={router.query.q} />
+      </div>
 
       <div className="flex flex-col items-center">
         <div className='flex justify-between items-center w-1/2 p-8 border-b hover:bg-gray-50'>
