@@ -1,7 +1,7 @@
 ## Plan
 
 [x] profile page
-[ ] search
+[x] search
 [ ] following
 
 [ ] liking

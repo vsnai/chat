@@ -6,14 +6,18 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import Nav from '../components/nav';
+import Search from '../components/search';
 
-export default function Tweet({ user, tweets }) {
+export default function Profile({ user, tweets }) {
   dayjs.extend(relativeTime);
   const router = useRouter();
 
   return (
     <>
-      <Nav user={user} />
+      <div className="flex container justify-between mx-auto my-2">
+        <Nav user={user} />
+        <Search query={router.query.q} />
+      </div>
 
       <div className="flex flex-col items-center">
         <div className="flex justify-between items-center w-1/2 my-4">
