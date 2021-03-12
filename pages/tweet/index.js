@@ -97,7 +97,7 @@ export default function Tweet({ user, tweets }) {
 
               <div className="flex flex-col flex-grow ml-4">
                 <div className="flex items-center">
-                  <div className="font-bold">{user.username}</div>
+                  <button onClick={() => router.push(`/${user.username}`)} className="font-bold">{user.username}</button>
                   <div className="ml-2 text-xs text-gray-300">
                     {tweet.updated_at !== null
                       ? `${dayjs(tweet.updated_at).fromNow()} (edited)`

@@ -13,7 +13,7 @@ export default async (req, res) => {
       inserted_at: new Date(),
       updated_at: null
     });
-  
+
     res.status(201).json({});
   } else if (req.method === 'PUT') {
     const { db } = await connectToDatabase();
