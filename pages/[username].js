@@ -1,28 +1,64 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-import { connectToDatabase } from '../util/mongodb';
+import { getSession } from 'next-auth/client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import Nav from '../components/nav';
-import Search from '../components/search';
 
-export default function Profile({ user, tweets }) {
+export default function Profile() {
   dayjs.extend(relativeTime);
   const router = useRouter();
+
+  const [user, setUser] = useState({});
+  const [tweets, setTweets] = useState({});
+
+  // useEffect(() => {
+  //   async function fetchData () {
+  //     const session = await getSession();
+
+  //     if (! session) {
+  //       router.push('/');
+
+  //       return;
+  //     }
+
+  //     setUser(session.user);
+  //   }
+
+  //   fetchData();
+  // }, [])
+
+  useEffect(() => {
+    if (router.asPath !== router.route) {
+      async function getTweets () {
+        const res = await fetch('/api/v1/user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: router.query.username })
+        });
+
+        const json = await res.json();
+
+        setUser(json.user);
+        setTweets(json.tweets);
+      }
+
+      getTweets();
+    }
+  }, [router]);
 
   return (
     <>
       <div className="flex container justify-between mx-auto my-2">
-        <Nav user={user} />
-        <Search query={router.query.q} />
+        <Nav user={user} query={router.query.q} />
       </div>
 
       <div className="flex flex-col items-center">
         <div className="flex justify-between items-center w-1/2 my-4">
           <div className="flex items-center space-x-4">
-            <img className="w-24 h-24 rounded-full" src={user.avatar} />
+            <img className="w-24 h-24 rounded-full" src={user.image} />
             <div>{user.bio}</div>
           </div>
           <div>0 Following | 0 Followers</div>
@@ -34,15 +70,15 @@ export default function Profile({ user, tweets }) {
             className='flex justify-between items-center w-1/2 p-8 border-b hover:bg-gray-50'
           >
             <div className="flex flex-auto">
-              <img className="w-12 h-12 rounded-full" src={user.avatar} />
+              <img className="w-12 h-12 rounded-full" src={user.image} />
 
               <div className="flex flex-col flex-grow ml-4">
                 <div className="flex items-center">
-                  <div className="font-bold">{user.username}</div>
+                  <div className="font-bold">{user.name}</div>
                   <div className="ml-2 text-xs text-gray-300">
-                    {tweet.updated_at !== null
-                      ? `${dayjs(tweet.updated_at).fromNow()} (edited)`
-                      : dayjs(tweet.inserted_at).fromNow()
+                    {tweet.updatedAt !== null
+                      ? `${dayjs(tweet.updatedAt).fromNow()} (edited)`
+                      : dayjs(tweet.createdAt).fromNow()
                     }
                   </div>
                 </div>
@@ -50,7 +86,7 @@ export default function Profile({ user, tweets }) {
                 <div className="my-2">{tweet.content}</div>
 
                 <div className="flex space-x-2">
-                  <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => router.push(`/tweet/${tweet._id}`)}>Show</button>
+                  <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => console.log('under con..')}>Show</button>
                 </div>
               </div>
             </div>
@@ -59,18 +95,4 @@ export default function Profile({ user, tweets }) {
       </div>
     </>
   );
-}
-
-export async function getServerSideProps({ query }) {
-  const { db } = await connectToDatabase();
-
-  const user = await db.collection('users').findOne({ username: query.username });
-  const tweets = await db.collection('tweets').find({ user_id: user._id }).sort( { _id: -1 } ).toArray();
-
-  return {
-    props: {
-      user: JSON.parse(JSON.stringify(user)),
-      tweets: JSON.parse(JSON.stringify(tweets)),
-    }
-  };
 }

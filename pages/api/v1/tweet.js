@@ -1,24 +1,28 @@
+import { getSession } from 'next-auth/client';
 import { ObjectId } from 'mongodb';
 import { connectToDatabase } from '../../../util/mongodb';
 
 export default async (req, res) => {
-  if (req.method === 'POST') {
-    const { db } = await connectToDatabase();
+  const session = await getSession({ req });
+  const { db } = await connectToDatabase();
 
-    const { user, tweet } = req.body;
+  if (req.method === 'GET') {
+    const tweets = await db.collection('tweets').find({ user_id: ObjectId(session.user.id) }).sort( { _id: -1 } ).toArray();
+
+    res.status(200).json({ tweets });
+  } else if (req.method === 'POST') {
+    const { tweet } = req.body;
 
     await db.collection('tweets').insertOne({
-      user_id: ObjectId(user._id),
+      user_id: ObjectId(session.user.id),
       content: tweet.content,
-      inserted_at: new Date(),
-      updated_at: null
+      createdAt: new Date(),
+      updatedAt: null
     });
 
     res.status(201).json({});
   } else if (req.method === 'PUT') {
-    const { db } = await connectToDatabase();
-
-    const { user, tweet } = req.body;
+    const { tweet } = req.body;
 
     await db.collection('tweets').findOneAndUpdate(
       { _id: ObjectId(tweet._id) },
@@ -27,9 +31,7 @@ export default async (req, res) => {
 
     res.status(200).json({});
   } else if (req.method === 'DELETE') {
-    const { db } = await connectToDatabase();
-
-    const { user, tweet } = req.body;
+    const { tweet } = req.body;
 
     await db.collection('tweets').deleteOne({_id: ObjectId(tweet._id)});
 

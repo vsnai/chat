@@ -9,8 +9,9 @@
   "dependencies": {
     "@tailwindcss/forms": "^0.2.1",
     "dayjs": "^1.10.4",
-    "mongodb": "^3.5.9",
+    "mongodb": "^3.6.4",
     "next": "latest",
+    "next-auth": "^3.11.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },

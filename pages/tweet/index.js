@@ -1,25 +1,48 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { connectToDatabase } from '../../util/mongodb';
+import { getSession } from 'next-auth/client';
+
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import Nav from '../../components/nav';
-import Search from '../../components/search';
 
-export default function Tweet({ user, tweets }) {
+export default function Tweet() {
   dayjs.extend(relativeTime);
   const router = useRouter();
 
+  const [user, setUser] = useState({});
+  const [tweets, setTweets] = useState({});
   const [selectedTweet, setSelectedTweet] = useState({ _id: '', content: '' });
   const [isEditMode, setIsEditMode] = useState(false);
+
+  useEffect(() => {
+    async function fetchData () {
+      const session = await getSession();
+
+      if (! session) {
+        router.push('/');
+
+        return;
+      }
+
+      setUser(session.user);
+
+      const res = await fetch('/api/v1/tweet');
+      const json = await res.json();
+
+      setTweets(json.tweets);
+    }
+
+    fetchData();
+  }, [])
 
   async function add () {
     const res = await fetch('/api/v1/tweet', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user, tweet: selectedTweet })
+      body: JSON.stringify({ tweet: selectedTweet })
     });
 
     if (res.status === 201) {
@@ -31,7 +54,7 @@ export default function Tweet({ user, tweets }) {
     const res = await fetch('/api/v1/tweet', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user, tweet: selectedTweet })
+      body: JSON.stringify({ tweet: selectedTweet })
     });
 
     if (res.status === 200) {
@@ -43,7 +66,7 @@ export default function Tweet({ user, tweets }) {
     const res = await fetch('/api/v1/tweet', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ user, tweet })
+      body: JSON.stringify({ tweet })
     });
 
     if (res.status === 204) {
@@ -66,8 +89,7 @@ export default function Tweet({ user, tweets }) {
   return (
     <>
       <div className="flex container justify-between mx-auto my-2">
-        <Nav user={user} />
-        <Search query={router.query.q} />
+        <Nav user={user} query={router.query.q} />
       </div>
 
       <div className="flex flex-col items-center">
@@ -97,15 +119,15 @@ export default function Tweet({ user, tweets }) {
             className='flex justify-between items-center w-1/2 p-8 border-b hover:bg-gray-50'
           >
             <div className="flex flex-auto">
-              <img className="w-12 h-12 rounded-full" src={user.avatar} />
+              <img className="w-12 h-12 rounded-full" src={user.image} />
 
               <div className="flex flex-col flex-grow ml-4">
                 <div className="flex items-center">
-                  <button onClick={() => router.push(`/${user.username}`)} className="font-bold">{user.username}</button>
+                  <button onClick={() => router.push(`/${user.name}`)} className="font-bold">{user.name}</button>
                   <div className="ml-2 text-xs text-gray-300">
-                    {tweet.updated_at !== null
-                      ? `${dayjs(tweet.updated_at).fromNow()} (edited)`
-                      : dayjs(tweet.inserted_at).fromNow()
+                    {tweet.updatedAt !== null
+                      ? `${dayjs(tweet.updatedAt).fromNow()} (edited)`
+                      : dayjs(tweet.createdAt).fromNow()
                     }
                   </div>
                 </div>
@@ -113,7 +135,7 @@ export default function Tweet({ user, tweets }) {
                 <div className="my-2">{tweet.content}</div>
 
                 <div className="flex space-x-2">
-                  <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => router.push(`/tweet/${tweet._id}`)}>Show</button>
+                  <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => console.log('under construction...')}>Show</button>
                   <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => enterEditMode(tweet)}>Edit</button>
                   <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => remove(tweet) }>Delete</button>
                 </div>
@@ -124,18 +146,4 @@ export default function Tweet({ user, tweets }) {
       </div>
     </>
   );
-}
-
-export async function getServerSideProps() {
-  const { db } = await connectToDatabase();
-
-  const user = await db.collection('users').findOne();
-  const tweets = await db.collection('tweets').find({ user_id: user._id }).sort( { _id: -1 } ).toArray();
-
-  return {
-    props: {
-      user: JSON.parse(JSON.stringify(user)),
-      tweets: JSON.parse(JSON.stringify(tweets)),
-    }
-  };
 }

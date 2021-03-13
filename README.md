@@ -3,13 +3,12 @@
 [x] profile page
 [x] search
 
-[ ] light authentication
-[ ] following
+[ ] authentication
 
 [ ] liking
-[ ] DMs
+[ ] following
 
-[ ] auth
+[ ] DMs
 
 ## Example app using MongoDB
 
