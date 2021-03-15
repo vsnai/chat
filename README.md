@@ -3,10 +3,10 @@
 [x] profile page
 [x] search
 
-[ ] authentication
+[x] authentication
 [x] refactoring
 
-[ ] liking
+[x] liking
 [ ] following
 [ ] DMs
 

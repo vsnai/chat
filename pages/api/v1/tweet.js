@@ -7,7 +7,7 @@ export default async (req, res) => {
   const { db } = await connectToDatabase();
 
   if (req.method === 'GET') {
-    const tweets = await db.collection('tweets').find({ user_id: ObjectId(session.user.id) }).sort( { _id: -1 } ).toArray();
+    const tweets = await db.collection('tweets').find({ userId: ObjectId(session.user.id) }).sort( { _id: -1 } ).toArray();
 
     res.status(200).json({ tweets });
   } else if (req.method === 'POST') {
@@ -16,8 +16,9 @@ export default async (req, res) => {
     const date = new Date();
 
     const { ops } = await db.collection('tweets').insertOne({
-      user_id: ObjectId(session.user.id),
+      userId: ObjectId(session.user.id),
       content: tweet.content,
+      likedBy: [],
       createdAt: date,
       updatedAt: date
     });

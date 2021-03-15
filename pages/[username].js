@@ -30,6 +30,14 @@ export default function Profile({ username }) {
     getTweets();
   }, []);
 
+  async function like (tweet) {
+    await fetch('/api/v1/like', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tweet })
+    });
+  }
+
   return (
     <>
       <Nav query={router.query.q} />
@@ -65,6 +73,7 @@ export default function Profile({ username }) {
                 <div className="my-2">{tweet.content}</div>
 
                 <div className="flex space-x-2">
+                  <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => like(tweet)}>Like</button>
                   <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => console.log('under con..')}>Show</button>
                 </div>
               </div>

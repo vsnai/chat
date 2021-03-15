@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { getSession } from 'next-auth/client';
+import { useSession, getSession } from 'next-auth/client';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -12,6 +12,7 @@ export default function Tweet() {
   dayjs.extend(relativeTime);
   const router = useRouter();
 
+  const [session, loading] = useSession();
   const [user, setUser] = useState({});
   const [tweets, setTweets] = useState([]);
   const [selectedTweet, setSelectedTweet] = useState({ _id: '', content: '' });
@@ -63,6 +64,8 @@ export default function Tweet() {
   }
 
   async function edit () {
+    setIsLoading(true);
+
     const res = await fetch('/api/v1/tweet', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -70,8 +73,17 @@ export default function Tweet() {
     });
 
     if (res.status === 200) {
-      router.reload();
+      const currentTweet = tweets.find(t => t._id === selectedTweet._id);
+
+      currentTweet.content = selectedTweet.content;
+      currentTweet.updatedAt = new Date();
+
+      setTweets([...tweets]);
     }
+
+    setIsLoading(false);
+    setIsEditMode(false);
+    setSelectedTweet({ _id: '', content: '' });
   }
 
   async function remove (tweet) {
@@ -82,7 +94,7 @@ export default function Tweet() {
     });
 
     if (res.status === 204) {
-      router.reload();
+      setTweets([...tweets.filter(t => t._id !== tweet._id)]);
     }
   }
 
@@ -96,6 +108,38 @@ export default function Tweet() {
     setIsEditMode(false);
 
     setSelectedTweet({ _id: '', content: '' });
+  }
+
+  async function like (tweet) {
+    const res = await fetch('/api/v1/like', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tweet })
+    });
+
+    if (res.status === 200) {
+      const currentTweet = tweets.find(t => t._id === tweet._id);
+
+      if (currentTweet.likedBy.indexOf(session.user.id) === -1) {
+        currentTweet.likedBy.push(session.user.id);
+      }
+
+      setTweets([...tweets]);
+    }
+  }
+
+  async function dislike (tweet) {
+    const res = await fetch('/api/v1/like', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tweet })
+    });
+
+    if (res.status === 204) {
+      tweets.find(t => t._id === tweet._id).likedBy = tweet.likedBy.filter(item => item !== session.user.id);
+
+      setTweets([...tweets]);
+    }
   }
 
   return (
@@ -143,8 +187,28 @@ export default function Tweet() {
 
               <div className="my-2">{tweet.content}</div>
 
-              <div className="flex space-x-2">
-                <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => console.log('under construction...')}>Show</button>
+              <div className="flex space-x-4">
+                {!tweet.likedBy.includes(session.user.id) &&
+                  <button className="flex focus:outline-none text-xs text-gray-300 hover:text-red-300" onClick={() => like(tweet)}>
+                    <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                    </svg>
+
+                    <div className="ml-1">{tweet.likedBy.length}</div>
+                  </button>
+                }
+
+                {tweet.likedBy.includes(session.user.id) &&
+                  <button className="flex focus:outline-none text-xs text-red-500 hover:text-gray-300" onClick={() => dislike(tweet)}>
+                    <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                    </svg>
+
+                    <div className="ml-1">{tweet.likedBy.length}</div>
+                  </button>
+                }
+
+                <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => console.log(tweet)}>Show</button>
                 <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => enterEditMode(tweet)}>Edit</button>
                 <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => remove(tweet) }>Delete</button>
               </div>
