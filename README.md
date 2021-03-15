@@ -4,10 +4,10 @@
 [x] search
 
 [ ] authentication
+[x] refactoring
 
 [ ] liking
 [ ] following
-
 [ ] DMs
 
 ## Example app using MongoDB

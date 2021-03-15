@@ -1,59 +1,38 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-import { getSession } from 'next-auth/client';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import Nav from '../components/nav';
 
-export default function Profile() {
+export default function Profile({ username }) {
   dayjs.extend(relativeTime);
   const router = useRouter();
 
   const [user, setUser] = useState({});
   const [tweets, setTweets] = useState({});
 
-  // useEffect(() => {
-  //   async function fetchData () {
-  //     const session = await getSession();
-
-  //     if (! session) {
-  //       router.push('/');
-
-  //       return;
-  //     }
-
-  //     setUser(session.user);
-  //   }
-
-  //   fetchData();
-  // }, [])
-
   useEffect(() => {
-    if (router.asPath !== router.route) {
-      async function getTweets () {
-        const res = await fetch('/api/v1/user', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: router.query.username })
-        });
+    async function getTweets () {
+      const res = await fetch('/api/v1/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: username })
+      });
 
-        const json = await res.json();
+      const json = await res.json();
 
-        setUser(json.user);
-        setTweets(json.tweets);
-      }
-
-      getTweets();
+      setUser(json.user);
+      setTweets(json.tweets);
     }
-  }, [router]);
+
+    getTweets();
+  }, []);
 
   return (
     <>
-      <div className="flex container justify-between mx-auto my-2">
-        <Nav user={user} query={router.query.q} />
-      </div>
+      <Nav query={router.query.q} />
 
       <div className="flex flex-col items-center">
         <div className="flex justify-between items-center w-1/2 my-4">
@@ -76,9 +55,9 @@ export default function Profile() {
                 <div className="flex items-center">
                   <div className="font-bold">{user.name}</div>
                   <div className="ml-2 text-xs text-gray-300">
-                    {tweet.updatedAt !== null
-                      ? `${dayjs(tweet.updatedAt).fromNow()} (edited)`
-                      : dayjs(tweet.createdAt).fromNow()
+                    {dayjs(tweet.updatedAt).isSame(dayjs(tweet.createdAt))
+                      ? dayjs(tweet.createdAt).fromNow()
+                      : `${dayjs(tweet.updatedAt).fromNow()} (edited)`
                     }
                   </div>
                 </div>
@@ -95,4 +74,10 @@ export default function Profile() {
       </div>
     </>
   );
+}
+
+export function getServerSideProps({ params }) {
+  return {
+    props: { username: params.username }
+  };
 }

@@ -7,8 +7,13 @@ export default async (req, res) => {
     const { name } = req.body;
 
     const user = await db.collection('users').findOne({ name });
-    const tweets = await db.collection('tweets').find({ user_id: user._id }).sort( { _id: -1 } ).toArray();
 
-    res.status(200).json({ user, tweets });
+    if (user === null) {
+      res.status(404).end();
+    } else {
+      const tweets = await db.collection('tweets').find({ user_id: user._id }).sort( { _id: -1 } ).toArray();
+
+      res.status(200).json({ user, tweets });
+    }
   }
 }

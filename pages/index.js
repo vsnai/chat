@@ -1,4 +1,4 @@
-import { useSession, signIn, signOut } from 'next-auth/client';
+import { useSession, signIn } from 'next-auth/client';
 import { useRouter } from 'next/router';
 
 export default function Home() {
@@ -14,5 +14,9 @@ export default function Home() {
     }
   }
 
-  return <>Loading ...</>;
+  return <div className="flex justify-center items-center min-h-screen">
+    <h1 className="text-9xl">
+      <span className="text-transparent bg-gradient-to-r bg-clip-text from-blue-500 to-red-500">Loading ...</span>
+    </h1>
+  </div>;
 }

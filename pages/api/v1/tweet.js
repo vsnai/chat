@@ -13,20 +13,22 @@ export default async (req, res) => {
   } else if (req.method === 'POST') {
     const { tweet } = req.body;
 
-    await db.collection('tweets').insertOne({
+    const date = new Date();
+
+    const { ops } = await db.collection('tweets').insertOne({
       user_id: ObjectId(session.user.id),
       content: tweet.content,
-      createdAt: new Date(),
-      updatedAt: null
+      createdAt: date,
+      updatedAt: date
     });
 
-    res.status(201).json({});
+    res.status(201).json({ latestTweet: ops[0] });
   } else if (req.method === 'PUT') {
     const { tweet } = req.body;
 
     await db.collection('tweets').findOneAndUpdate(
       { _id: ObjectId(tweet._id) },
-      { $set: { content: tweet.content, updated_at: new Date() } }
+      { $set: { content: tweet.content, updatedAt: new Date() } }
     );
 
     res.status(200).json({});
