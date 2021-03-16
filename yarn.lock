@@ -66,6 +66,11 @@
   "resolved" "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.1.1.tgz"
   "version" "9.1.1"
 
+"@headlessui/react@^0.3.1":
+  "integrity" "sha512-GnAVXCLmDs3CFvmvYo4Iu/LqAWVIoS+bGo+eMADnbWgF8BeMX13sWMyb8eOdj7N9nqY9QA2AsMzqYdAIbbsRIw=="
+  "resolved" "https://registry.npmjs.org/@headlessui/react/-/react-0.3.1.tgz"
+  "version" "0.3.1"
+
 "@next/env@10.0.8":
   "integrity" "sha512-vWdxAHD6gJn52tN5bxj1VoRgu5lNtRPc/HyYf7V014k2GZ9eKhqoFQGSSMNGHB7WgdUxLVw75+o9Ek9ClOOAjw=="
   "resolved" "https://registry.npmjs.org/@next/env/-/env-10.0.8.tgz"
@@ -1918,7 +1923,7 @@
   "resolved" "https://registry.npmjs.org/react-refresh/-/react-refresh-0.8.3.tgz"
   "version" "0.8.3"
 
-"react@^16.13.1", "react@^16.13.1 || ^17", "react@^16.14.0", "react@^16.6.0 || ^17", "react@^16.8.0 || ^17.0.0", "react@^16.9.0 || ^17", "react@15.x.x || 16.x.x || 17.x.x":
+"react@^16.13.1", "react@^16.13.1 || ^17", "react@^16.14.0", "react@^16.6.0 || ^17", "react@^16.8.0 || ^17.0.0", "react@^16.9.0 || ^17", "react@>=16", "react@15.x.x || 16.x.x || 17.x.x":
   "integrity" "sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g=="
   "resolved" "https://registry.yarnpkg.com/react/-/react-16.14.0.tgz"
   "version" "16.14.0"

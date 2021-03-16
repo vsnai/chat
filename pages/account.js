@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 
 import { useSession } from 'next-auth/client';
 
-import Layout from '../../components/layout';
+import Layout from '../components/layout';
 
 export default function Account() {
   const router = useRouter();

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useSession, signOut } from 'next-auth/client';
+import { Menu } from '@headlessui/react';
 
 export default function Nav () {
   const router = useRouter();
@@ -28,9 +29,9 @@ export default function Nav () {
       <nav className="flex flex-grow container mx-auto justify-between items-center">
         <button className="px-4 py-2" onClick={() => router.push('/')}>Home</button>
 
-        <div className="flex items-center">
+        <div className="flex items-center space-x-8">
           <input
-            className="w-64 px-4 py-2 mr-4 bg-gray-100 border-0 border-b border-gray-200 focus:border-black focus:ring-0"
+            className="w-64 px-4 py-2 bg-gray-100 border-0 border-b border-gray-200 focus:border-black focus:ring-0"
             type="text"
             placeholder="Search"
             value={input}
@@ -38,12 +39,30 @@ export default function Nav () {
             onKeyDown={handle}
           />
 
-          <button className="px-4 py-2" onClick={() => router.push(`/${session.user.name}`)}>Profile</button>
-          <button className="px-4 py-2" onClick={() => router.push('/account')}>Account</button>
-          <button className="px-4 py-2" onClick={() => signOut()}>Sign out ({session && session.user.name})</button>
-          <button className="" onClick={() => {}}>
-            <img className="w-10 h-10 rounded-full" src={session && session.user.image} />
-          </button>
+          <div className="w-10 h-10 relative">
+            <Menu>
+              <Menu.Button>
+                <img className="w-10 h-10 rounded-full" src={session && session.user.image} />
+              </Menu.Button>
+              <Menu.Items className="absolute flex flex-col right-0 w-64 mt-2 origin-top-right bg-white border shadow-lg outline-none">
+                <Menu.Item>
+                  {() => (
+                    <button className={`flex px-8 py-2 hover:bg-gray-100`} onClick={() => router.push(`/${session.user.name}`)}>Profile</button>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {() => (
+                    <button className={`flex px-8 py-2 hover:bg-gray-100`} onClick={() => router.push('/account')}>Account</button>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {() => (
+                    <button className={`flex px-8 py-2 hover:bg-gray-100`} onClick={() => signOut()}>Sign out ({session && session.user.name})</button>
+                  )}
+                </Menu.Item>
+              </Menu.Items>
+            </Menu>
+          </div>
         </div>
       </nav>
     </div>
