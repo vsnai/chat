@@ -6,10 +6,12 @@ export default function Nav () {
   const router = useRouter();
 
   const [session, loading] = useSession();
-  const [input, setInput] = useState();
+  const [input, setInput] = useState('');
 
   useEffect(() => {
-    setInput(router.query.q);
+    if (router.query.q) {
+      setInput(router.query.q);
+    }
   }, [router]);
 
   function handle (e) {
