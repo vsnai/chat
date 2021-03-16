@@ -23,7 +23,7 @@ export default async (req, res) => {
       updatedAt: date
     });
 
-    res.status(201).json({ latestTweet: ops[0] });
+    res.status(201).json({ tweet: ops[0] });
   } else if (req.method === 'PUT') {
     const { tweet } = req.body;
 

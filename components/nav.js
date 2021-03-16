@@ -27,7 +27,7 @@ export default function Nav () {
   return (
     <div className="flex-none border-b py-4">
       <nav className="flex flex-grow container mx-auto justify-between items-center">
-        <button className="px-4 py-2" onClick={() => router.push('/')}>Home</button>
+        <button className="px-4 font-light text-2xl bg-gradient-to-r from-red-400 to-red-700 text-transparent bg-clip-text" onClick={() => router.push('/')}>social</button>
 
         <div className="flex items-center space-x-8">
           <input

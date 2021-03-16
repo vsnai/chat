@@ -6,15 +6,20 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 
 import Layout from '../components/layout';
 
-export default function Search({ users }) {
+export default function Search({ _users }) {
   dayjs.extend(relativeTime);
   const router = useRouter();
 
   return (
     <Layout>
-      <div className="flex flex-col items-center">
-        <div className="flex flex-col justify-between w-1/2 my-4">
-          {users && users.map(u => <button key={u._id} onClick={() => router.push(`/${u.name}`)}>{u.name}</button>)}
+      <div className="flex flex-col items-center w-full">
+        <div className="flex flex-col items-center w-1/2 my-4 bg-white p-2 border-b">
+          {_users && _users.map(user => {
+            return <button key={user._id} className="flex items-center w-full space-x-4 hover:bg-gray-100 p-2" onClick={() => router.push(`/${user.name}`)}>
+              <img className="w-16 h-16 rounded-full" src={user.image} />
+              <div>{user.name}</div>
+            </button>
+          })}
         </div>
       </div>
     </Layout>
@@ -28,7 +33,7 @@ export async function getServerSideProps({ query }) {
 
   return {
     props: {
-      users: JSON.parse(JSON.stringify(users))
+      _users: JSON.parse(JSON.stringify(users))
     }
   };
 }
