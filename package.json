@@ -23,5 +23,8 @@
   },
   "peerDependencies": {
     "mongodb": "^3.6.4"
+  },
+  "peerOptionalDependencies": {
+    "mongodb": "^3.6.4"
   }
 }

@@ -27,17 +27,29 @@ export default async (req, res) => {
   } else if (req.method === 'PUT') {
     const { tweet } = req.body;
 
-    await db.collection('tweets').findOneAndUpdate(
-      { _id: ObjectId(tweet._id) },
-      { $set: { content: tweet.content, updatedAt: new Date() } }
-    );
+    const _tweet = await db.collection('tweets').findOne({ _id: ObjectId(tweet._id) });
 
-    res.status(200).json({});
+    if (session.user.id === _tweet.userId.toString()) {
+      await db.collection('tweets').findOneAndUpdate(
+        { _id: ObjectId(tweet._id) },
+        { $set: { content: tweet.content, updatedAt: new Date() } }
+      );
+
+      res.status(200).json({});
+    } else {
+      res.status(400).json({});
+    }
   } else if (req.method === 'DELETE') {
     const { tweet } = req.body;
 
-    await db.collection('tweets').deleteOne({_id: ObjectId(tweet._id)});
+    const _tweet = await db.collection('tweets').findOne({ _id: ObjectId(tweet._id) });
 
-    res.status(204).json({});
+    if (session.user.id === _tweet.userId.toString()) {
+      await db.collection('tweets').deleteOne({_id: ObjectId(tweet._id)});
+
+      res.status(204).json({});
+    } else {
+      res.status(400).json({});
+    }
   }
 };

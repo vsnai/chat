@@ -140,14 +140,19 @@ export default function Tweet ({ session, user, _tweet, sendToParent }) {
           <Menu.Items className="z-10 absolute flex flex-col right-0 w-56 mt-1 origin-top-right font-light text-sm text-gray-600 bg-white border shadow-lg outline-none">
             <Menu.Item>
               {() => (
-                <button className={`flex text-left p-4 hover:text-black hover:bg-gray-50`} onClick={() => setIsEditMode(true)}>Edit</button>
+                <button className={`flex text-left p-4 hover:text-black hover:bg-gray-50`} onClick={() => console.log(tweet)}>Share</button>
               )}
             </Menu.Item>
-            <Menu.Item>
+            {session.id === tweet.userId && <Menu.Item>
+              {() => (
+                <button className={`flex text-left p-4 hover:text-black hover:bg-gray-50`} onClick={() => setIsEditMode(true)}>Edit</button>
+              )}
+            </Menu.Item>}
+            {session.id === tweet.userId && <Menu.Item>
               {() => (
                 <button className={`flex text-left p-4 hover:text-black hover:bg-gray-50`} onClick={() => remove() }>Delete</button>
               )}
-            </Menu.Item>
+            </Menu.Item>}
           </Menu.Items>
         </Menu>
       </div>

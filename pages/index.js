@@ -7,7 +7,7 @@ import { connectToDatabase } from '../util/mongodb';
 import Layout from '../components/layout';
 import Tweet from '../components/tweet';
 
-export default function Home({ session, _tweets }) {
+export default function Home({ session, _users, _tweets }) {
   const [tweets, setTweets] = useState(_tweets);
   const [selectedTweet, setSelectedTweet] = useState({ _id: '', content: '' });
   const [isLoading, setIsLoading] = useState(false);
@@ -60,7 +60,7 @@ export default function Home({ session, _tweets }) {
       </div>
 
       <div className="flex flex-col w-full items-center mb-8">
-        {tweets.length > 0 && tweets.map(tweet => <Tweet key={tweet._id} session={session.user} user={session.user} _tweet={tweet} sendToParent={setTweetId} />)}
+        {tweets.length > 0 && tweets.map(tweet => <Tweet key={tweet._id} session={session.user} user={_users.find(u => u._id === tweet.userId)} _tweet={tweet} sendToParent={setTweetId} />)}
       </div>
     </Layout>
   );
@@ -80,11 +80,24 @@ export async function getServerSideProps({ req }) {
 
   const { db } = await connectToDatabase();
 
-  const tweets = await db.collection('tweets').find({ userId: ObjectId(session.user.id) }).sort( { _id: -1 } ).toArray();
+  const follows = (await db.collection('follows').find({ follower: ObjectId(session.user.id) })
+    .project({ _id: 0, following: 1 })
+    .toArray())
+    .map(f => ObjectId(f.following));
+
+  const users = await db.collection('users')
+    .find({ _id: { $in: [ObjectId(session.user.id), ...follows] } })
+    .toArray();
+
+  const tweets = await db.collection('tweets')
+    .find({ userId: { $in: [ObjectId(session.user.id), ...follows] } })
+    .sort( { updatedAt: -1 } )
+    .toArray();
 
   return {
     props: {
       session,
+      _users: JSON.parse(JSON.stringify(users)),
       _tweets: JSON.parse(JSON.stringify(tweets)),
     }
   }

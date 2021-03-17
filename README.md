@@ -8,8 +8,16 @@
 
 [x] liking
 
-[ ] following
+[x] search                  only [a-z] allowed
+[x] account                 unique name
+[x] edit & del (backend)    only my own tweets
+[x] edit & del (frontend)   add show button, hide edit & delete if necessary
+[x] following
+
 [ ] DMs
+[ ] notifications
+  [ ] follow
+  [ ] like
 
 ## Example app using MongoDB
 
