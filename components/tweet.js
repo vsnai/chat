@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { Menu } from '@headlessui/react';
 
 export default function Tweet ({ session, user, _tweet, sendToParent }) {
   const router = useRouter();
@@ -10,6 +11,14 @@ export default function Tweet ({ session, user, _tweet, sendToParent }) {
 
   const [tweet, setTweet] = useState(_tweet);
   const [isEditMode, setIsEditMode] = useState(false);
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (isEditMode) {
+      setTimeout(() => inputRef.current.focus(), 200);
+    }
+  }, [isEditMode]);
 
   async function saveTweet (e) {
     if (e.key === 'Enter') {
@@ -21,6 +30,8 @@ export default function Tweet ({ session, user, _tweet, sendToParent }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tweet })
       });
+    } else if (e.key === 'Escape') {
+      setIsEditMode(false);
     }
   }
 
@@ -67,13 +78,15 @@ export default function Tweet ({ session, user, _tweet, sendToParent }) {
   }
 
   return (
-    <div className='flex justify-between items-center w-1/2 px-8 py-4 border-b bg-white hover:bg-gray-50'>
-      <div className="flex flex-auto">
-        <img className="w-12 h-12 rounded-full" src={user.image} />
+    <div className='flex justify-between items-start w-1/2 p-4 border-b bg-white hover:bg-gray-50'>
+      <div className="flex flex-auto items-center">
+        <button className="focus:outline-none" onClick={() => router.push(`/${user.name}`)}>
+          <img className="w-16 h-16 rounded-full mx-4" src={user.image} />
+        </button>
 
         <div className="flex flex-col flex-grow ml-4">
           <div className="flex items-center">
-            <button onClick={() => router.push(`/${user.name}`)} className="font-bold">{user.name}</button>
+            <div className="font-bold">{user.name}</div>
             <div className="ml-2 text-xs text-gray-300">
               {dayjs(tweet.updatedAt).isSame(dayjs(tweet.createdAt))
                 ? dayjs(tweet.createdAt).fromNow()
@@ -84,10 +97,11 @@ export default function Tweet ({ session, user, _tweet, sendToParent }) {
 
           {isEditMode 
             ? <input
-                className="w-64 px-4 py-2 bg-gray-100 border-0 border-b border-gray-200 focus:border-black focus:ring-0"
+                className="p-1 my-1 bg-white border-0 border-b border-gray-200 focus:border-black focus:outline-none focus:ring-0"
                 value={tweet.content}
                 onChange={e => setTweet({ ...tweet, content: e.target.value })}
                 onKeyDown={saveTweet}
+                ref={inputRef}
               />
             : <div className="my-2">{tweet.content}</div>
           }
@@ -112,11 +126,30 @@ export default function Tweet ({ session, user, _tweet, sendToParent }) {
                 <div className="ml-1">{tweet.likedBy.length}</div>
               </button>
             }
-
-            <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => setIsEditMode(true)}>Edit</button>
-            <button className="focus:outline-none text-xs text-gray-300 hover:text-black" onClick={() => remove() }>Delete</button>
           </div>
         </div>
+      </div>
+
+      <div className="relative">
+        <Menu>
+          <Menu.Button className="hover:bg-white p-2 focus:outline-none">
+            <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+            </svg>
+          </Menu.Button>
+          <Menu.Items className="z-10 absolute flex flex-col right-0 w-56 mt-1 origin-top-right font-light text-sm text-gray-600 bg-white border shadow-lg outline-none">
+            <Menu.Item>
+              {() => (
+                <button className={`flex text-left p-4 hover:text-black hover:bg-gray-50`} onClick={() => setIsEditMode(true)}>Edit</button>
+              )}
+            </Menu.Item>
+            <Menu.Item>
+              {() => (
+                <button className={`flex text-left p-4 hover:text-black hover:bg-gray-50`} onClick={() => remove() }>Delete</button>
+              )}
+            </Menu.Item>
+          </Menu.Items>
+        </Menu>
       </div>
     </div>
   );

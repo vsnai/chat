@@ -46,6 +46,16 @@ export async function getServerSideProps({ req, params }) {
   const { db } = await connectToDatabase();
 
   const user = await db.collection('users').findOne({ name: params.username });
+
+  if (! user) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: `/search?q=${params.username}`
+      }
+    }
+  }
+
   const tweets = await db.collection('tweets').find({ userId: user._id }).sort( { _id: -1 } ).toArray();
 
   return {
