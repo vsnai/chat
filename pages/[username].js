@@ -7,8 +7,9 @@ import { connectToDatabase } from '../util/mongodb';
 
 import Layout from '../components/layout';
 import Tweet from '../components/tweet';
+import Message from '../components/message';
 
-export default function Profile({ session, _user, _tweets, _follows }) {
+export default function Profile({ session, _user, _tweets, _follows, _counts }) {
   const router = useRouter();
 
   const [user] = useState(_user);
@@ -57,7 +58,15 @@ export default function Profile({ session, _user, _tweets, _follows }) {
           <div className="flex justify-between items-center bg-white p-8 border-b">
             <div className="flex items-center space-x-4">
               <img className="w-24 h-24 rounded-full" src={user.image} />
-              <div>{user.name}</div>
+              <div className="flex flex-col">
+                <div>{user.name}</div>
+                <div>Following: {_counts.followersCount} | Followers: {_counts.followingCount}</div>
+              </div>
+            </div>
+
+
+            <div>
+              <Message user={user} />
             </div>
 
             {session.user.id !== user._id &&
@@ -113,12 +122,16 @@ export async function getServerSideProps({ req, params }) {
   const follows = await db.collection('follows').find({ follower: ObjectId(session.user.id) }).toArray();
   const tweets = await db.collection('tweets').find({ userId: user._id }).sort( { _id: -1 } ).toArray();
 
+  const followersCount = await db.collection('follows').find({ follower: ObjectId(user._id) }).count();
+  const followingCount = await db.collection('follows').find({ following: ObjectId(user._id) }).count();
+
   return {
     props: {
       session,
       _user: JSON.parse(JSON.stringify(user)),
       _tweets: JSON.parse(JSON.stringify(tweets)),
       _follows: JSON.parse(JSON.stringify(follows)),
+      _counts: { followersCount, followingCount }
     }
   }
 }

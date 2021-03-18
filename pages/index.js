@@ -9,7 +9,7 @@ import Tweet from '../components/tweet';
 import Bitcoin from '../components/bitcoin';
 import Stock from '../components/stock';
 
-export default function Home({ session, _users, _tweets }) {
+export default function Home({ session, _users, _tweets, _messages }) {
   const [tweets, setTweets] = useState(_tweets);
   const [selectedTweet, setSelectedTweet] = useState({ _id: '', content: '' });
   const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +47,13 @@ export default function Home({ session, _users, _tweets }) {
     <Layout>
       <div className="container flex mt-4 space-x-4">
         <div className="flex-none flex flex-col w-64">
-          <div className="bg-white p-4 border-b">Hello, {session.user.name}.</div>
+          <div className="p-4 bg-white border-b mb-4">Hello, {session.user.name}.</div>
+
+          {_messages.length > 0 && 
+            _messages.map(m => {
+              return <div key={m._id} className="p-4 bg-white border-b"><span className="font-bold">{m.from[0].name}</span> {m.message}</div>
+            })
+          }
         </div>
 
         <div className="flex-auto">
@@ -119,11 +125,28 @@ export async function getServerSideProps({ req }) {
     .sort( { updatedAt: -1 } )
     .toArray();
 
+  const messages = await db.collection('messages')
+    .aggregate([
+      {
+        $match: { to: ObjectId(session.user.id) },
+      }, {
+        $lookup: {
+          from: 'users',
+          localField: 'from',
+          foreignField: '_id',
+          as: 'from'
+        }
+      }
+    ])
+    .sort( { _id: -1 } )
+    .toArray();
+
   return {
     props: {
       session,
       _users: JSON.parse(JSON.stringify(users)),
       _tweets: JSON.parse(JSON.stringify(tweets)),
+      _messages: JSON.parse(JSON.stringify(messages)),
     }
   }
 }
