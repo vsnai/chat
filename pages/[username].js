@@ -7,7 +7,6 @@ import { connectToDatabase } from '../util/mongodb';
 
 import Layout from '../components/layout';
 import Tweet from '../components/tweet';
-import Message from '../components/message';
 
 export default function Profile({ session, _user, _tweets, _follows, _counts }) {
   const router = useRouter();
@@ -64,11 +63,6 @@ export default function Profile({ session, _user, _tweets, _follows, _counts }) 
               </div>
             </div>
 
-
-            <div>
-              <Message user={user} />
-            </div>
-
             {session.user.id !== user._id &&
             <div>
               <button
@@ -89,7 +83,6 @@ export default function Profile({ session, _user, _tweets, _follows, _counts }) 
         <div className="flex-none flex flex-col w-64">
         </div>
       </div>
-
     </Layout>
   );
 }
