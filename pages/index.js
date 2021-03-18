@@ -7,6 +7,7 @@ import { connectToDatabase } from '../util/mongodb';
 import Layout from '../components/layout';
 import Tweet from '../components/tweet';
 import Bitcoin from '../components/bitcoin';
+import Stock from '../components/stock';
 
 export default function Home({ session, _users, _tweets }) {
   const [tweets, setTweets] = useState(_tweets);
@@ -46,7 +47,6 @@ export default function Home({ session, _users, _tweets }) {
     <Layout>
       <div className="container flex mt-4 space-x-4">
         <div className="flex-none flex flex-col w-64">
-        <div className="bg-white p-4 font-light text-center tracking-wide">Profile</div>
           <div className="bg-white p-4 border-b">Hello, {session.user.name}.</div>
         </div>
 
@@ -73,9 +73,17 @@ export default function Home({ session, _users, _tweets }) {
         </div>
 
         <div className="flex-none flex flex-col w-64">
-          <div className="bg-white p-4 font-light text-center tracking-wide">Bitcoin</div>
-          <Bitcoin currency="USD" />
-          <Bitcoin currency="EUR" />
+          <div className="p-4 bg-white">
+            <Bitcoin currency="USD" />
+          </div>
+
+          <div className="p-4 bg-white">
+            <Stock ticker="tsla" />
+          </div>
+
+          <div className="p-4 bg-white">
+            <Stock ticker="amzn" />
+          </div>
           <div className="border-b"></div>
         </div>
       </div>

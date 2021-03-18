@@ -15,7 +15,7 @@ export default async (req, res) => {
     });
 
     if (session.user.id !== user._id && ! result) {
-      await db.collection('follows').insert({
+      await db.collection('follows').insertOne({
         follower: ObjectId(session.user.id),
         following: ObjectId(user._id)
       });
