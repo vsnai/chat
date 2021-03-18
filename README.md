@@ -14,6 +14,8 @@
 [x] edit & del (frontend)   add show button, hide edit & delete if necessary
 [x] following
 
+[ ] settings                sort tweets by createdAt or updatedAt (user's preference)
+
 [ ] DMs
 [ ] notifications
   [ ] follow

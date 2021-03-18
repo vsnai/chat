@@ -49,26 +49,38 @@ export default function Profile({ session, _user, _tweets, _follows }) {
 
   return (
     <Layout>
-      <div className="flex flex-col items-center w-full">
-        <div className="flex justify-between w-1/2 my-4 bg-white p-8 border-b">
-          <div className="flex items-center space-x-4">
-            <img className="w-24 h-24 rounded-full" src={user.image} />
-            <div>{user.name}</div>
+      <div className="container flex mt-4 space-x-4">
+        <div className="flex-none flex flex-col w-64">
+        </div>
+
+        <div className="flex-auto">
+          <div className="flex justify-between items-center bg-white p-8 border-b">
+            <div className="flex items-center space-x-4">
+              <img className="w-24 h-24 rounded-full" src={user.image} />
+              <div>{user.name}</div>
+            </div>
+
+            {session.user.id !== user._id &&
+            <div>
+              <button
+                onClick={isFollowing(user) ? () => unfollow(user) : () => follow(user)}
+                className='flex mx-2 px-4 py-2 text-white border bg-black border-black hover:bg-white hover:text-black'
+              >
+                {isFollowing(user) ? 'Unfollow' : 'Follow'}
+              </button>
+            </div>
+            }
           </div>
 
-          {session.user.id !== user._id && <button
-            onClick={isFollowing(user) ? () => unfollow(user) : () => follow(user)}
-            className='flex-none mx-2 px-4 py-2 text-white border bg-black border-black hover:bg-white hover:text-black'
-          >
-            {isFollowing(user) ? 'Unfollow' : 'Follow'}
-          </button>
-          }
+          <div className="flex flex-col w-full items-center mb-8">
+            {tweets.length > 0 && tweets.map(tweet => <Tweet key={tweet._id} session={session.user} user={user} _tweet={tweet} sendToParent={setTweetId} />)}
+          </div>
+        </div>
+
+        <div className="flex-none flex flex-col w-64">
         </div>
       </div>
 
-      <div className="flex flex-col w-full items-center mb-8">
-        {tweets.length > 0 && tweets.map(tweet => <Tweet key={tweet._id} session={session.user} user={user} _tweet={tweet} sendToParent={setTweetId} />)}
-      </div>
     </Layout>
   );
 }

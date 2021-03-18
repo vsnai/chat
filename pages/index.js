@@ -6,6 +6,7 @@ import { connectToDatabase } from '../util/mongodb';
 
 import Layout from '../components/layout';
 import Tweet from '../components/tweet';
+import Bitcoin from '../components/bitcoin';
 
 export default function Home({ session, _users, _tweets }) {
   const [tweets, setTweets] = useState(_tweets);
@@ -43,24 +44,40 @@ export default function Home({ session, _users, _tweets }) {
 
   return (
     <Layout>
-      <div className="flex justify-between w-1/2 my-4">
-        <input
-          className="w-5/6 px-4 py-2 border-0 border-b mr-4 border-gray-200 focus:border-black focus:ring-0"
-          type="text"
-          placeholder="Say Something..."
-          onChange={e => setSelectedTweet({ ...selectedTweet, content: e.target.value })}
-          value={selectedTweet.content}
-        />
+      <div className="container flex mt-4 space-x-4">
+        <div className="flex-none flex flex-col w-64">
+        <div className="bg-white p-4 font-light text-center tracking-wide">Profile</div>
+          <div className="bg-white p-4 border-b">Hello, {session.user.name}.</div>
+        </div>
 
-        <button
-          onClick={() => add()}
-          className={`flex-grow px-4 py-2 text-white border ${isLoading || selectedTweet.content === '' ? 'text-gray-300 bg-gray-100 border-gray-300 point cursor-default' : 'bg-black border-black hover:bg-white hover:text-black'}`}
-          disabled={isLoading || selectedTweet.content === ''}
-        >Add</button>
-      </div>
+        <div className="flex-auto">
+          <div className="flex justify-between">
+            <input
+              className="w-5/6 px-4 py-2 border-0 border-b mr-4 border-gray-200 focus:border-black focus:ring-0"
+              type="text"
+              placeholder="Say Something..."
+              onChange={e => setSelectedTweet({ ...selectedTweet, content: e.target.value })}
+              value={selectedTweet.content}
+            />
 
-      <div className="flex flex-col w-full items-center mb-8">
-        {tweets.length > 0 && tweets.map(tweet => <Tweet key={tweet._id} session={session.user} user={_users.find(u => u._id === tweet.userId)} _tweet={tweet} sendToParent={setTweetId} />)}
+            <button
+              onClick={() => add()}
+              className={`flex-grow px-4 py-2 text-white border ${isLoading || selectedTweet.content === '' ? 'text-gray-300 bg-gray-100 border-gray-300 point cursor-default' : 'bg-black border-black hover:bg-white hover:text-black'}`}
+              disabled={isLoading || selectedTweet.content === ''}
+            >Add</button>
+          </div>
+
+          <div className="flex flex-col items-center mt-4 mb-8">
+            {tweets.length > 0 && tweets.map(tweet => <Tweet key={tweet._id} session={session.user} user={_users.find(u => u._id === tweet.userId)} _tweet={tweet} sendToParent={setTweetId} />)}
+          </div>
+        </div>
+
+        <div className="flex-none flex flex-col w-64">
+          <div className="bg-white p-4 font-light text-center tracking-wide">Bitcoin</div>
+          <Bitcoin currency="USD" />
+          <Bitcoin currency="EUR" />
+          <div className="border-b"></div>
+        </div>
       </div>
     </Layout>
   );

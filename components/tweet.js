@@ -78,7 +78,7 @@ export default function Tweet ({ session, user, _tweet, sendToParent }) {
   }
 
   return (
-    <div className='flex justify-between items-start w-1/2 p-4 border-b bg-white hover:bg-gray-50'>
+    <div className='flex justify-between items-start w-full p-4 border-b bg-white hover:bg-gray-50'>
       <div className="flex flex-auto items-center">
         <button className="focus:outline-none" onClick={() => router.push(`/${user.name}`)}>
           <img className="w-16 h-16 rounded-full mx-4" src={user.image} />
@@ -86,7 +86,7 @@ export default function Tweet ({ session, user, _tweet, sendToParent }) {
 
         <div className="flex flex-col flex-grow ml-4">
           <div className="flex items-center">
-            <div className="font-bold">{user.name}</div>
+            <button className="font-bold" onClick={() => router.push(`/${user.name}`)}>{user.name}</button>
             <div className="ml-2 text-xs text-gray-300">
               {dayjs(tweet.updatedAt).isSame(dayjs(tweet.createdAt))
                 ? dayjs(tweet.createdAt).fromNow()
