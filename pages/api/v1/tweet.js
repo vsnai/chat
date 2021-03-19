@@ -7,7 +7,7 @@ export default async (req, res) => {
   const { db } = await connectToDatabase();
 
   if (req.method === 'GET') {
-    const tweets = await db.collection('tweets').find({ userId: ObjectId(session.user.id) }).sort( { _id: -1 } ).toArray();
+    const tweets = await db.collection('tweets').find({ userId: ObjectId(session.user._id) }).sort( { _id: -1 } ).toArray();
 
     res.status(200).json({ tweets });
   } else if (req.method === 'POST') {
@@ -16,7 +16,7 @@ export default async (req, res) => {
     const date = new Date();
 
     const { ops } = await db.collection('tweets').insertOne({
-      userId: ObjectId(session.user.id),
+      userId: ObjectId(session.user._id),
       content: tweet.content,
       likedBy: [],
       createdAt: date,
@@ -29,7 +29,7 @@ export default async (req, res) => {
 
     const _tweet = await db.collection('tweets').findOne({ _id: ObjectId(tweet._id) });
 
-    if (session.user.id === _tweet.userId.toString()) {
+    if (session.user._id === _tweet.userId.toString()) {
       await db.collection('tweets').findOneAndUpdate(
         { _id: ObjectId(tweet._id) },
         { $set: { content: tweet.content, updatedAt: new Date() } }
@@ -44,7 +44,7 @@ export default async (req, res) => {
 
     const _tweet = await db.collection('tweets').findOne({ _id: ObjectId(tweet._id) });
 
-    if (session.user.id === _tweet.userId.toString()) {
+    if (session.user._id === _tweet.userId.toString()) {
       await db.collection('tweets').deleteOne({_id: ObjectId(tweet._id)});
 
       res.status(204).json({});

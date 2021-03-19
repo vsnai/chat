@@ -74,7 +74,7 @@ export default function Tweet ({ session, user, _tweet, sendToParent }) {
   }
 
   function getUserId () {
-    return session.id === user.id ? user.id : session.id;
+    return session._id === user.id ? user.id : session._id;
   }
 
   return (
@@ -143,12 +143,12 @@ export default function Tweet ({ session, user, _tweet, sendToParent }) {
                 <button className={`flex text-left p-4 hover:text-black hover:bg-gray-50`} onClick={() => console.log(tweet)}>Share</button>
               )}
             </Menu.Item>
-            {session.id === tweet.userId && <Menu.Item>
+            {session._id === tweet.userId && <Menu.Item>
               {() => (
                 <button className={`flex text-left p-4 hover:text-black hover:bg-gray-50`} onClick={() => setIsEditMode(true)}>Edit</button>
               )}
             </Menu.Item>}
-            {session.id === tweet.userId && <Menu.Item>
+            {session._id === tweet.userId && <Menu.Item>
               {() => (
                 <button className={`flex text-left p-4 hover:text-black hover:bg-gray-50`} onClick={() => remove() }>Delete</button>
               )}

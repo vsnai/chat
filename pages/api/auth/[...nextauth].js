@@ -12,7 +12,7 @@ export default NextAuth({
   database: process.env.MONGODB_URI,
   callbacks: {
     async session(session, token) {
-      return Promise.resolve({ ...session, user: { ...session.user, id: token.id } })
+      return Promise.resolve({ ...session, user: { ...session.user, _id: token.id } })
     }
   }
 });

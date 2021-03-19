@@ -10,13 +10,13 @@ export default async (req, res) => {
     const { user } = req.body;
 
     const result = await db.collection('follows').findOne({
-      follower: ObjectId(session.user.id),
+      follower: ObjectId(session.user._id),
       following: ObjectId(user._id)
     });
 
-    if (session.user.id !== user._id && ! result) {
+    if (session.user._id !== user._id && ! result) {
       await db.collection('follows').insertOne({
-        follower: ObjectId(session.user.id),
+        follower: ObjectId(session.user._id),
         following: ObjectId(user._id)
       });
 
@@ -28,11 +28,11 @@ export default async (req, res) => {
     const { user } = req.body;
 
     const result = await db.collection('follows').findOne({
-      follower: ObjectId(session.user.id),
+      follower: ObjectId(session.user._id),
       following: ObjectId(user._id)
     });
 
-    if (session.user.id !== user._id && result) {
+    if (session.user._id !== user._id && result) {
       await db.collection('follows').deleteOne({ _id: result._id });
 
       res.status(204).json({});

@@ -14,7 +14,7 @@ export default async (req, res) => {
 
     if (! user) {
       await db.collection('users').findOneAndUpdate(
-        { _id: ObjectId(session.user.id) },
+        { _id: ObjectId(session.user._id) },
         { $set: { name: name.replace(/[^a-z]/gi, '').toLowerCase() } }
       );
     

@@ -11,8 +11,8 @@ export default async (req, res) => {
 
     const messages = await db.collection('messages').find({
       $or: [
-        { from: ObjectId(user._id), to: ObjectId(session.user.id) },
-        { from: ObjectId(session.user.id), to: ObjectId(user._id) }
+        { from: ObjectId(user._id), to: ObjectId(session.user._id) },
+        { from: ObjectId(session.user._id), to: ObjectId(user._id) }
       ]
     })
     .sort({ _id: -1 })

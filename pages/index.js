@@ -8,6 +8,7 @@ import Layout from '../components/layout';
 import Tweet from '../components/tweet';
 import Bitcoin from '../components/bitcoin';
 import Stock from '../components/stock';
+import Contacts from '../components/contacts';
 
 export default function Home({ session, _users, _tweets }) {
   const [tweets, setTweets] = useState(_tweets);
@@ -46,9 +47,21 @@ export default function Home({ session, _users, _tweets }) {
   return (
     <Layout>
       <div className="container flex mt-4 space-x-4">
-        <div className="flex-none flex flex-col w-64">
-          <div className="p-4 bg-white border-b mb-4">Hello, {session.user.name}.</div>
-        </div>
+        <aside className="flex-none flex flex-col w-64">
+          <div className="p-4 bg-white">
+            <Bitcoin currency="USD" />
+          </div>
+
+          <div className="p-4 bg-white">
+            <Stock ticker="tsla" />
+          </div>
+
+          <div className="p-4 bg-white">
+            <Stock ticker="amzn" />
+          </div>
+
+          <div className="border-b"></div>
+        </aside>
 
         <div className="flex-auto">
           <div className="flex justify-between">
@@ -72,20 +85,9 @@ export default function Home({ session, _users, _tweets }) {
           </div>
         </div>
 
-        <div className="flex-none flex flex-col w-64">
-          <div className="p-4 bg-white">
-            <Bitcoin currency="USD" />
-          </div>
-
-          <div className="p-4 bg-white">
-            <Stock ticker="tsla" />
-          </div>
-
-          <div className="p-4 bg-white">
-            <Stock ticker="amzn" />
-          </div>
-          <div className="border-b"></div>
-        </div>
+        <aside className="flex-none flex flex-col w-64">
+          <Contacts />
+        </aside>
       </div>
     </Layout>
   );
@@ -105,17 +107,17 @@ export async function getServerSideProps({ req }) {
 
   const { db } = await connectToDatabase();
 
-  const follows = (await db.collection('follows').find({ follower: ObjectId(session.user.id) })
+  const follows = (await db.collection('follows').find({ follower: ObjectId(session.user._id) })
     .project({ _id: 0, following: 1 })
     .toArray())
     .map(f => ObjectId(f.following));
 
   const users = await db.collection('users')
-    .find({ _id: { $in: [ObjectId(session.user.id), ...follows] } })
+    .find({ _id: { $in: [ObjectId(session.user._id), ...follows] } })
     .toArray();
 
   const tweets = await db.collection('tweets')
-    .find({ userId: { $in: [ObjectId(session.user.id), ...follows] } })
+    .find({ userId: { $in: [ObjectId(session.user._id), ...follows] } })
     .sort( { updatedAt: -1 } )
     .toArray();
 

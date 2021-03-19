@@ -52,7 +52,7 @@ export default function Search({ session, _users, _follows }) {
                   <div>{user.name}</div>
                 </button>
 
-                {session.user.id !== user._id && <button
+                {session.user._id !== user._id && <button
                   onClick={isFollowing(user) ? () => unfollow(user) : () => follow(user)}
                   className='flex-none mx-2 px-4 py-2 text-white border bg-black border-black hover:bg-white hover:text-black'
                 >
@@ -86,7 +86,7 @@ export async function getServerSideProps({ req, query }) {
   const q = query.q.replace(/[^a-z]/gi, '');
 
   const users = await db.collection('users').find({ name: {'$regex': new RegExp(q) } }).toArray();
-  const follows = await db.collection('follows').find({ follower: ObjectId(session.user.id) }).toArray();
+  const follows = await db.collection('follows').find({ follower: ObjectId(session.user._id) }).toArray();
 
   return {
     props: {

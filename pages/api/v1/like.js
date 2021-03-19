@@ -11,7 +11,7 @@ export default async (req, res) => {
 
     await db.collection('tweets').findOneAndUpdate(
       { _id: ObjectId(tweet._id) },
-      { $addToSet: { likedBy: ObjectId(session.user.id) } }
+      { $addToSet: { likedBy: ObjectId(session.user._id) } }
     );
 
     res.status(200).json({});
@@ -20,7 +20,7 @@ export default async (req, res) => {
 
     await db.collection('tweets').findOneAndUpdate(
       { _id: ObjectId(tweet._id) },
-      { $pull: { likedBy: ObjectId(session.user.id) } }
+      { $pull: { likedBy: ObjectId(session.user._id) } }
     );
 
     res.status(204).json({});

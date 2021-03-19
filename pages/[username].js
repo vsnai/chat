@@ -63,7 +63,7 @@ export default function Profile({ session, _user, _tweets, _follows, _counts }) 
               </div>
             </div>
 
-            {session.user.id !== user._id &&
+            {session.user._id !== user._id &&
             <div>
               <button
                 onClick={isFollowing(user) ? () => unfollow(user) : () => follow(user)}
@@ -112,7 +112,7 @@ export async function getServerSideProps({ req, params }) {
     }
   }
 
-  const follows = await db.collection('follows').find({ follower: ObjectId(session.user.id) }).toArray();
+  const follows = await db.collection('follows').find({ follower: ObjectId(session.user._id) }).toArray();
   const tweets = await db.collection('tweets').find({ userId: user._id }).sort( { _id: -1 } ).toArray();
 
   const followersCount = await db.collection('follows').find({ follower: ObjectId(user._id) }).count();

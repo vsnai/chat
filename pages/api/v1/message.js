@@ -12,7 +12,7 @@ export default async (req, res) => {
     const date = new Date();
 
     const { ops } = await db.collection('messages').insertOne({
-      from: ObjectId(session.user.id),
+      from: ObjectId(session.user._id),
       to: ObjectId(user._id),
       message: input,
       createdAt: date,
