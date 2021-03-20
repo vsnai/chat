@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { RespondentContext } from '../contexts/RespondentContext';
 
 export default function Contacts () {
-  const { respondent, setRespondent } = useContext(RespondentContext);
+  const { setRespondent } = useContext(RespondentContext);
 
   const [isLoading, setIsLoading] = useState(false);
   const [contacts, setContacts] = useState([]);

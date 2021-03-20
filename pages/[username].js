@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 
 import { getSession } from 'next-auth/client';
@@ -8,9 +8,13 @@ import { connectToDatabase } from '../util/mongodb';
 import Layout from '../components/layout';
 import Tweet from '../components/tweet';
 
-export default function Profile({ session, _user, _tweets, _follows, _counts }) {
+import { RespondentContext } from '../contexts/RespondentContext';
+
+export default function Profile ({ session, _user, _tweets, _follows, _counts }) {
   const router = useRouter();
 
+  const { setRespondent } = useContext(RespondentContext);
+  
   const [user] = useState(_user);
   const [tweets, setTweets] = useState(_tweets);
   const [tweetId, setTweetId] = useState('');
@@ -63,16 +67,27 @@ export default function Profile({ session, _user, _tweets, _follows, _counts }) 
               </div>
             </div>
 
-            {session.user._id !== user._id &&
-            <div>
-              <button
-                onClick={isFollowing(user) ? () => unfollow(user) : () => follow(user)}
-                className='flex mx-2 px-4 py-2 text-white border bg-black border-black hover:bg-white hover:text-black'
-              >
-                {isFollowing(user) ? 'Unfollow' : 'Follow'}
-              </button>
+            <div className="flex">
+              <div>
+                <button
+                  onClick={() => setRespondent(user)}
+                  className='flex mx-2 px-4 py-2 text-white border bg-black border-black hover:bg-white hover:text-black'
+                >
+                  Chat
+                </button>
+              </div>
+
+              {session.user._id !== user._id &&
+              <div>
+                <button
+                  onClick={isFollowing(user) ? () => unfollow(user) : () => follow(user)}
+                  className='flex mx-2 px-4 py-2 text-white border bg-black border-black hover:bg-white hover:text-black'
+                >
+                  {isFollowing(user) ? 'Unfollow' : 'Follow'}
+                </button>
+              </div>
+              }
             </div>
-            }
           </div>
 
           <div className="flex flex-col w-full items-center mb-8">

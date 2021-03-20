@@ -5,7 +5,7 @@ export default async (req, res) => {
 
   const contacts = await db.collection('users').find({}).toArray();
 
-  if (contacts) {    
+  if (contacts) {
     res.status(200).json({ contacts });
   } else {
     res.status(404).end();
