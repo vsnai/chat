@@ -81,7 +81,7 @@ export default function Tweet ({ session, user, _tweet, sendToParent }) {
     <div className='flex justify-between items-start w-full p-4 border-b bg-white hover:bg-gray-50'>
       <div className="flex flex-auto items-center">
         <button className="focus:outline-none" onClick={() => router.push(`/${user.name}`)}>
-          <img className="w-16 h-16 rounded-full mx-4" src={user.image} />
+          <img className="w-16 h-16 rounded-full mx-4" src={user && user.image} />
         </button>
 
         <div className="flex flex-col flex-grow ml-4">
