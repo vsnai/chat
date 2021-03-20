@@ -25,7 +25,7 @@ export default function Chat () {
   }, 5000);
 
   async function getChat () {
-    const res = await fetch('/api/v1/chat/chat', {
+    const res = await fetch('/api/v1/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user: respondent })
@@ -62,10 +62,6 @@ export default function Chat () {
     setChat([]);
   }
 
-  function showMinimizedChat () {
-    return <>Select a contact...</>
-  }
-
   function showChat () {
     return <div className="w-full">
       {respondent &&
@@ -91,7 +87,7 @@ export default function Chat () {
         <input
           className="w-full px-4 py-2 bg-gray-100 border-0 border-b border-gray-200 focus:border-black focus:ring-0"
           type="text"
-          placeholder={respondent ? respondent.name : 'nekaa'}
+          placeholder="Your Message..."
           onKeyDown={sendMessage}
           value={input}
           onChange={e => setInput(e.target.value)}
@@ -102,7 +98,7 @@ export default function Chat () {
 
   return (
     <div className="absolute flex flex-col items-center bottom-0 right-0 w-72 mr-20 bg-white shadow">
-      {respondent ? showChat() : showMinimizedChat() }
+      {respondent && showChat()}
     </div>
   );
 }

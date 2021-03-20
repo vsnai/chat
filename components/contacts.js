@@ -35,7 +35,7 @@ export default function Contacts () {
         {contacts.map(contact =>
           <button
             key={contact._id}
-            className="flex items-center space-x-2 p-4 hover:bg-gray-50 focus:outline-none"
+            className="flex items-center space-x-2 p-4 bg-white hover:bg-gray-50 focus:outline-none"
             onClick={() => setRespondent(contact)}
           >
             <img className="w-8 h-8" src={contact.image} />

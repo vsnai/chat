@@ -1,6 +1,6 @@
 import { getSession } from 'next-auth/client';
 import { ObjectId } from 'mongodb';
-import { connectToDatabase } from '../../../../util/mongodb';
+import { connectToDatabase } from '../../../util/mongodb';
 
 export default async (req, res) => {
   if (req.method === 'POST') {
