@@ -60,7 +60,6 @@ export default function Search () {
       })
     }), false);
 
-
     await fetch('/api/v1/follows', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },

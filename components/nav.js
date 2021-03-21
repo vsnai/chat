@@ -30,7 +30,7 @@ export default function Nav () {
       <nav className="flex flex-grow container mx-auto justify-between items-center">
         <button className="px-4 font-light text-2xl bg-gradient-to-r from-blue-400 to-blue-700 text-transparent bg-clip-text" onClick={() => router.push('/')}>social</button>
 
-        <div className="flex items-center space-x-8">
+        <div className="flex items-center space-x-4">
           <input
             className="w-64 px-4 py-2 bg-gray-100 border-0 border-b border-gray-200 focus:border-black focus:ring-0"
             type="text"
@@ -40,10 +40,10 @@ export default function Nav () {
             onKeyDown={handle}
           />
 
-          <div className="w-10 h-10 relative rounded-full">
+          <div className="w-10 h-10 relative">
             <Menu>
               <Menu.Button className="focus:outline-none">
-                <img className="w-10 h-10 rounded-full" src={session && session.user.image} />
+                <img className="w-10 h-10" src={session && session.user.image} />
               </Menu.Button>
               <Menu.Items className="absolute flex flex-col right-0 w-56 mt-1 origin-top-right font-light text-sm text-gray-600 bg-white border shadow-lg outline-none">
                 <Menu.Item>

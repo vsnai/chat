@@ -16,7 +16,7 @@ export default function Profile () {
   const [session, loading] = useSession();
 
   const { data, error, mutate } = useSWR(
-    ! loading && `/api/v1/tweets/${name}`,
+    ! loading && `/api/v1/profile/${name}`,
     (...args) => fetch(...args).then(res => res.json())
   );
 
@@ -28,33 +28,36 @@ export default function Profile () {
     }
   }, [error]);
 
-  // async function follow (user) {
-  //   const res = await fetch('/api/v1/follows', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ user })
-  //   });
+  async function follow () {
+    mutate(data => ({
+      ...data,
+      user: { ...data.user, isFollowing: true },
+      followingCount: data.followingCount + 1
+    }), false);
 
-  //   if (res.status === 201) {
-  //     router.reload();
-  //   }
-  // }
+    await fetch('/api/v1/follows', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: data.user })
+    });
 
-  // async function unfollow (user) {
-  //   const res = await fetch('/api/v1/follows', {
-  //     method: 'DELETE',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ user })
-  //   });
+    mutate();
+  }
 
-  //   if (res.status === 204) {
-  //     router.reload();
-  //   }
-  // }
+  async function unfollow () {
+    mutate(data => ({
+      ...data,
+      user: { ...data.user, isFollowing: false },
+      followingCount: data.followingCount - 1
+    }), false);
 
-  function isFollowing () {
-    // return !! _follows.find(f => f.following === data.user._id);
-    return true;
+    await fetch('/api/v1/follows', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: data.user })
+    });
+
+    mutate();
   }
 
   return (
@@ -67,14 +70,26 @@ export default function Profile () {
           <div className="flex-auto">
             <div className="flex justify-between items-center bg-white p-8 border-b">
               <div className="flex items-center space-x-4">
-                <img className="w-24 h-24 rounded-full" src={data.user.image} />
-                <div className="flex flex-col">
-                  <div>{data.user.name}</div>
-                  {/* <div>Following: {_counts.followersCount} | Followers: {_counts.followingCount}</div> */}
+                <img className="w-36 h-36" src={data.user.image} />
+                <div className="flex flex-col flex-auto space-y-4">
+                  <div className="text-xl tracking-widest">{data.user.name}</div>
+                  <div className="flex flex-col">
+                    <div>Following: <span className="font-bold">{data.followersCount}</span></div>
+                    <div>Followers: <span className="font-bold">{data.followingCount}</span></div>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex">
+              <div className="flex flex-col space-y-4">
+                {session.user._id !== data.user._id &&
+                  <button
+                    onClick={data.user.isFollowing ? () => unfollow() : () => follow()}
+                    className='flex-none mx-2 px-4 py-2 text-white border bg-black border-black hover:bg-white hover:text-black'
+                  >
+                    {data.user.isFollowing ? 'Unfollow' : 'Follow'}
+                  </button>
+                }
+
                 <div>
                   <button
                     onClick={() => setRespondent(data.user)}
@@ -83,17 +98,6 @@ export default function Profile () {
                     Send Message
                   </button>
                 </div>
-
-                {session.user._id !== data.user._id &&
-                <div>
-                  <button
-                    onClick={isFollowing() ? () => unfollow() : () => follow()}
-                    className='flex mx-2 px-4 py-2 text-white border bg-black border-black hover:bg-white hover:text-black'
-                  >
-                    {isFollowing() ? 'Unfollow' : 'Follow'}
-                  </button>
-                </div>
-                }
               </div>
             </div>
 
@@ -109,45 +113,3 @@ export default function Profile () {
     </Layout>
   );
 }
-
-// export async function getServerSideProps({ req, params }) {
-//   const session = await getSession({ req });
-
-//   if (! session) {
-//     return {
-//       redirect: {
-//         permanent: false,
-//         destination: '/api/auth/signin'
-//       }
-//     }
-//   }
-
-//   const { db } = await connectToDatabase();
-
-//   const user = await db.collection('users').findOne({ name: params.name });
-
-//   if (! user) {
-//     return {
-//       redirect: {
-//         permanent: false,
-//         destination: `/search?q=${params.name}`
-//       }
-//     }
-//   }
-
-//   const follows = await db.collection('follows').find({ follower: ObjectId(session.user._id) }).toArray();
-//   const tweets = await db.collection('tweets').find({ userId: user._id }).sort( { _id: -1 } ).toArray();
-
-//   const followersCount = await db.collection('follows').find({ follower: ObjectId(user._id) }).count();
-//   const followingCount = await db.collection('follows').find({ following: ObjectId(user._id) }).count();
-
-//   return {
-//     props: {
-//       session,
-//       _user: JSON.parse(JSON.stringify(user)),
-//       _tweets: JSON.parse(JSON.stringify(tweets)),
-//       _follows: JSON.parse(JSON.stringify(follows)),
-//       _counts: { followersCount, followingCount }
-//     }
-//   }
-// }
