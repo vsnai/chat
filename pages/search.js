@@ -13,7 +13,7 @@ export default function Search({ session, _users, _follows }) {
   const router = useRouter();
 
   async function follow (user) {
-    const res = await fetch('/api/v1/follow', {
+    const res = await fetch('/api/v1/follows', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user })
@@ -25,7 +25,7 @@ export default function Search({ session, _users, _follows }) {
   }
 
   async function unfollow (user) {
-    const res = await fetch('/api/v1/follow', {
+    const res = await fetch('/api/v1/follows', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user })

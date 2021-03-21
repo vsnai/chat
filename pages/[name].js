@@ -11,16 +11,18 @@ import { RespondentContext } from '../contexts/RespondentContext';
 export default function Profile () {
   const router = useRouter();
 
-  const { username } = router.query;
+  const { name } = router.query;
 
   const [session, loading] = useSession();
 
   const { data, error, mutate } = useSWR(
-    ! loading && `/api/v1/tweets/${username}`,
+    ! loading && `/api/v1/tweets/${name}`,
     (...args) => fetch(...args).then(res => res.json())
   );
 
   const { setRespondent } = useContext(RespondentContext);
+
+  console.log(data);
 
   useEffect(() => {
     if (error) {
@@ -29,7 +31,7 @@ export default function Profile () {
   }, [error]);
 
   // async function follow (user) {
-  //   const res = await fetch('/api/v1/follow', {
+  //   const res = await fetch('/api/v1/follows', {
   //     method: 'POST',
   //     headers: { 'Content-Type': 'application/json' },
   //     body: JSON.stringify({ user })
@@ -41,7 +43,7 @@ export default function Profile () {
   // }
 
   // async function unfollow (user) {
-  //   const res = await fetch('/api/v1/follow', {
+  //   const res = await fetch('/api/v1/follows', {
   //     method: 'DELETE',
   //     headers: { 'Content-Type': 'application/json' },
   //     body: JSON.stringify({ user })
@@ -52,9 +54,10 @@ export default function Profile () {
   //   }
   // }
 
-  // function isFollowing (user) {
-  //   return !! _follows.find(f => f.following === user._id);
-  // }
+  function isFollowing () {
+    // return !! _follows.find(f => f.following === data.user._id);
+    return true;
+  }
 
   return (
     <Layout>
@@ -79,20 +82,20 @@ export default function Profile () {
                     onClick={() => setRespondent(data.user)}
                     className='flex mx-2 px-4 py-2 text-white border bg-black border-black hover:bg-white hover:text-black'
                   >
-                    Chat
+                    Send Message
                   </button>
                 </div>
 
-                {/* {session.user._id !== data.user._id &&
+                {session.user._id !== data.user._id &&
                 <div>
                   <button
-                    onClick={isFollowing(user) ? () => unfollow(user) : () => follow(user)}
+                    onClick={isFollowing() ? () => unfollow() : () => follow()}
                     className='flex mx-2 px-4 py-2 text-white border bg-black border-black hover:bg-white hover:text-black'
                   >
-                    {isFollowing(user) ? 'Unfollow' : 'Follow'}
+                    {isFollowing() ? 'Unfollow' : 'Follow'}
                   </button>
                 </div>
-                } */}
+                }
               </div>
             </div>
 
@@ -123,13 +126,13 @@ export default function Profile () {
 
 //   const { db } = await connectToDatabase();
 
-//   const user = await db.collection('users').findOne({ name: params.username });
+//   const user = await db.collection('users').findOne({ name: params.name });
 
 //   if (! user) {
 //     return {
 //       redirect: {
 //         permanent: false,
-//         destination: `/search?q=${params.username}`
+//         destination: `/search?q=${params.name}`
 //       }
 //     }
 //   }

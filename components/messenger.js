@@ -4,13 +4,13 @@ import useSWR from 'swr';
 
 import { RespondentContext } from '../contexts/RespondentContext';
 
-export default function Chat () {
+export default function Messenger () {
   const router = useRouter();
   
   const { respondent, setRespondent } = useContext(RespondentContext);
 
   const { data, mutate } = useSWR(
-    respondent && `/api/v1/chat/${respondent?._id}`,
+    respondent && `/api/v1/messages/${respondent?._id}`,
     (...args) => fetch(...args).then(res => res.json()),
     { refreshInterval: 5000 }
   );
@@ -27,7 +27,7 @@ export default function Chat () {
 
   async function sendMessage (e) {
     if (e.key === 'Enter') {
-      await fetch('/api/v1/message', {
+      await fetch('/api/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ input, user: respondent })

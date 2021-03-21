@@ -1,5 +1,5 @@
 import Nav from './nav';
-import Chat from './chat';
+import Messenger from './messenger';
 
 export default function Layout ({ children }) {
   return (
@@ -10,7 +10,7 @@ export default function Layout ({ children }) {
         {children}
       </div>
 
-      <Chat />
+      <Messenger />
     </div>
   );
 }

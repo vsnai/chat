@@ -7,7 +7,7 @@ import Layout from '../components/layout';
 export default function Account () {
   const router = useRouter();
 
-  const { data, error, mutate } = useSWR('/api/v1/user', (...args) => fetch(...args).then(res => res.json()));
+  const { data, error, mutate } = useSWR('/api/v1/users', (...args) => fetch(...args).then(res => res.json()));
 
   const [isChanged, setIsChanged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +27,7 @@ export default function Account () {
     setIsLoading(true);
     setIsError(false);
 
-    const res = await fetch('/api/v1/account', {
+    const res = await fetch('/api/v1/accounts', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: data.user.name })

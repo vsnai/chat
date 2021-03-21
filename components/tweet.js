@@ -70,7 +70,7 @@ export default function Tweet ({ session, tweet, mutate }) {
       })
     }), false);
 
-    await fetch('/api/v1/like', {
+    await fetch('/api/v1/likes', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tweet })
@@ -91,7 +91,7 @@ export default function Tweet ({ session, tweet, mutate }) {
       })
     }), false);
 
-    await fetch('/api/v1/like', {
+    await fetch('/api/v1/likes', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tweet })
