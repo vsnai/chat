@@ -22,8 +22,6 @@ export default function Profile () {
 
   const { setRespondent } = useContext(RespondentContext);
 
-  console.log(data);
-
   useEffect(() => {
     if (error) {
       router.push('/api/auth/signin');
