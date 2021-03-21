@@ -18,7 +18,7 @@ export default async (req, res) => {
         { $set: { name: name.replace(/[^a-z]/gi, '').toLowerCase() } }
       );
     
-      res.status(200).json({});
+      res.status(200).end();
     } else {
       res.status(400).end();
     }

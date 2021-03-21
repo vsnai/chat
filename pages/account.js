@@ -69,7 +69,7 @@ export default function Account () {
             Save</button>
         </div>
 
-        {isError && <div className="absolute px-4 py-2 right-4 bottom-4 text-white bg-red-600">Name already taken...</div>}
+        {isError && <div className="w-1/2 px-4 py-2 right-4 bottom-4 text-white bg-gradient-to-r from-red-700 to-red-600">Name already taken...</div>}
       </>}
     </Layout>
   )

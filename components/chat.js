@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
@@ -9,13 +9,21 @@ export default function Chat () {
   
   const { respondent, setRespondent } = useContext(RespondentContext);
 
-  const { data, error, mutate } = useSWR(
+  const { data, mutate } = useSWR(
     respondent && `/api/v1/chat/${respondent?._id}`,
     (...args) => fetch(...args).then(res => res.json()),
     { refreshInterval: 5000 }
   );
 
   const [input, setInput] = useState('');
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (data) {
+      inputRef.current.focus();
+    }
+  }, [data]);
 
   async function sendMessage (e) {
     if (e.key === 'Enter') {
@@ -60,6 +68,7 @@ export default function Chat () {
             onKeyDown={sendMessage}
             value={input}
             onChange={e => setInput(e.target.value)}
+            ref={inputRef}
           />
         </div>
       </div>

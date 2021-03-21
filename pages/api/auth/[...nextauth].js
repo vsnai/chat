@@ -11,8 +11,16 @@ export default NextAuth({
   ],
   database: process.env.MONGODB_URI,
   callbacks: {
-    async session(session, token) {
+    async session (session, token) {
       return Promise.resolve({ ...session, user: { ...session.user, _id: token.id } })
     }
+  },
+  events: {
+    async signIn (message) { 
+      // console.log(message.user.name);
+    },
+    async createUser (message) {
+      //
+    },
   }
 });
