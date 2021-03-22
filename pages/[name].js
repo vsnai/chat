@@ -69,15 +69,12 @@ export default function Profile () {
           </div>
 
           <div className="flex-auto">
+            {/* Profile */}
             <div className="flex justify-between items-center bg-white p-8 border-b">
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-8">
                 <div className="w-36 h-36 bg-gray-200 animate-pulse"></div>
                 <div className="flex flex-col flex-auto space-y-4">
                   <div className="animate-pulse w-32 h-8 bg-gray-200"></div>
-                  <div className="flex flex-col space-y-2">
-                    <div className="animate-pulse w-32 h-4 bg-gray-200"></div>
-                    <div className="animate-pulse w-32 h-4 bg-gray-200"></div>
-                  </div>
                 </div>
               </div>
 
@@ -87,6 +84,24 @@ export default function Profile () {
               </div>
             </div>
 
+            {/* Selector */}
+            <div className="flex w-full items-center mt-4 text-gray-200">
+              <button className="flex-1 flex justify-center p-4 focus:outline-none bg-white font-bold">
+                Tweets
+              </button>
+
+              <div className="flex-1 flex justify-center items-center p-4 space-x-2">
+                <span className="animate-pulse bg-gray-200">000</span>
+                <span className="">Following</span>
+              </div>
+
+              <div className="flex-1 flex justify-center items-center p-4 space-x-2">
+                <span className="animate-pulse bg-gray-200">000</span>
+                <span className="">Followers</span>
+              </div>
+            </div>
+
+            {/* Tweet */}
             <div className='flex items-center w-full p-4 border-b bg-white'>
               <div className="animate-pulse w-16 h-16 mx-4 bg-gray-200"></div>
 
@@ -128,15 +143,12 @@ export default function Profile () {
           </div>
 
           <div className="flex-auto">
+            {/* Profile */}
             <div className="flex justify-between items-center bg-white p-8 border-b">
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-8">
                 <img className="w-36 h-36" src={data.user.image} />
                 <div className="flex flex-col flex-auto space-y-4">
                   <div className="text-xl tracking-widest">{data.user.name}</div>
-                  <div className="flex flex-col">
-                    <div>Following: <span className="font-bold">{data.followersCount}</span></div>
-                    <div>Followers: <span className="font-bold">{data.followingCount}</span></div>
-                  </div>
                 </div>
               </div>
 
@@ -161,7 +173,33 @@ export default function Profile () {
               </div>
             </div>
 
+            {/* Selector */}
+            <div className="flex w-full items-center mt-4">
+              <button className="flex-1 flex justify-center p-4 focus:outline-none bg-white font-bold">
+                Tweets
+              </button>
+
+              <button className="flex-1 flex justify-center p-4 space-x-2 focus:outline-none text-gray-600 hover:text-black hover:bg-gray-50">
+                <span className="font-bold">{data.followersCount}</span>
+                <span className="">Following</span>
+              </button>
+
+              <button className="flex-1 flex justify-center p-4 space-x-2 focus:outline-none text-gray-600 hover:text-black hover:bg-gray-50">
+                <span className="font-bold">{data.followingCount}</span>
+                <span className="">Followers</span>
+              </button>
+            </div>
+
+            {/* Tweets */}
             <div className="flex flex-col w-full items-center mb-8">
+              {data.tweets.length === 0 && <>
+                <div className='flex items-center w-full p-4 border-b bg-white'>
+                  <div className="flex flex-grow ml-4">
+                    {data.user.name} hasn't posted yet.
+                  </div>
+                </div>
+              </>}
+
               {data.tweets.map(tweet => <Tweet key={tweet._id} session={session} tweet={tweet} mutate={mutate} />)}
             </div>
           </div>
