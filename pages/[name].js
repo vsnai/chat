@@ -85,19 +85,20 @@ export default function Profile () {
             </div>
 
             {/* Selector */}
-            <div className="flex w-full items-center mt-4 text-gray-200">
-              <button className="flex-1 flex justify-center p-4 focus:outline-none bg-white font-bold">
-                Tweets
-              </button>
-
-              <div className="flex-1 flex justify-center items-center p-4 space-x-2">
+            <div className="flex w-full items-center mt-4 text-gray-200 bg-gray-50">
+              <div className="flex-1 flex justify-center items-center p-4 space-x-2 bg-white">
                 <span className="animate-pulse bg-gray-200">000</span>
-                <span className="">Following</span>
+                <span>Tweets</span>
               </div>
 
               <div className="flex-1 flex justify-center items-center p-4 space-x-2">
                 <span className="animate-pulse bg-gray-200">000</span>
-                <span className="">Followers</span>
+                <span>Following</span>
+              </div>
+
+              <div className="flex-1 flex justify-center items-center p-4 space-x-2">
+                <span className="animate-pulse bg-gray-200">000</span>
+                <span>Followers</span>
               </div>
             </div>
 
@@ -174,19 +175,20 @@ export default function Profile () {
             </div>
 
             {/* Selector */}
-            <div className="flex w-full items-center mt-4">
-              <button className="flex-1 flex justify-center p-4 focus:outline-none bg-white font-bold">
-                Tweets
+            <div className="flex w-full items-center mt-4 bg-gray-50">
+              <button className="flex-1 flex justify-center items-center p-4 focus:outline-none space-x-2 bg-white">
+                <span className="font-bold">{data.tweets.length}</span>
+                <span>{data.tweets.length === 1 ? 'Tweet' : 'Tweets'}</span>
               </button>
 
-              <button className="flex-1 flex justify-center p-4 space-x-2 focus:outline-none text-gray-600 hover:text-black hover:bg-gray-50">
+              <button className="flex-1 flex justify-center items-center p-4 focus:outline-none space-x-2 text-gray-600 hover:bg-white hover:text-black">
                 <span className="font-bold">{data.followersCount}</span>
-                <span className="">Following</span>
+                <span>Following</span>
               </button>
 
-              <button className="flex-1 flex justify-center p-4 space-x-2 focus:outline-none text-gray-600 hover:text-black hover:bg-gray-50">
+              <button className="flex-1 flex justify-center items-center p-4 focus:outline-none space-x-2 text-gray-600 hover:bg-white hover:text-black">
                 <span className="font-bold">{data.followingCount}</span>
-                <span className="">Followers</span>
+                <span>{data.followingCount === 1 ? 'Follower' : 'Followers'}</span>
               </button>
             </div>
 
