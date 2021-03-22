@@ -45,7 +45,7 @@ export default function Messenger () {
       <div className="w-full">
         <div className="flex justify-between items-center border-b p-4 mb-2">
           <button className="flex items-center focus:outline-none" onClick={() => router.push(`/${respondent.name}`)}>
-            <img className="w-10 h-10 rounded-full" src={respondent.image} />
+            <img className="w-10 h-10" src={respondent.image} />
             <div className="ml-4 font-bold">{respondent.name}</div>
           </button>
 

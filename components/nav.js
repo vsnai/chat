@@ -43,7 +43,10 @@ export default function Nav () {
           <div className="w-10 h-10 relative">
             <Menu>
               <Menu.Button className="focus:outline-none">
-                <img className="w-10 h-10" src={session && session.user.image} />
+                {! session
+                  ? <div className="animate-pulse w-10 h-10 bg-gray-200"></div>
+                  : <img className="w-10 h-10" src={session && session.user.image} />
+                }
               </Menu.Button>
               <Menu.Items className="absolute flex flex-col right-0 w-56 mt-1 origin-top-right font-light text-sm text-gray-600 bg-white border shadow-lg outline-none">
                 <Menu.Item>
