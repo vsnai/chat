@@ -54,7 +54,7 @@ export default function Home () {
           <div className="flex-auto">
             <div className="flex justify-between">
               <input
-                className="w-5/6 px-4 py-2 border-0 border-b mr-4 border-gray-200 focus:border-black focus:ring-0"
+                className="flex-auto px-4 py-2 border-0 border-b mr-4 border-gray-200 focus:border-black focus:ring-0"
                 type="text"
                 placeholder="Say Something..."
                 onChange={e => setSelectedTweet({ ...selectedTweet, content: e.target.value })}
@@ -63,7 +63,7 @@ export default function Home () {
 
               <button
                 onClick={() => add()}
-                className={`flex-grow px-4 py-2 text-white border ${isLoading || selectedTweet.content === '' ? 'text-gray-300 bg-gray-100 border-gray-300 point cursor-default' : 'bg-black border-black hover:bg-white hover:text-black'}`}
+                className={`flex-none w-32 px-4 py-2 text-white border ${isLoading || selectedTweet.content === '' ? 'text-gray-300 bg-gray-100 border-gray-300 point cursor-default' : 'bg-black border-black hover:bg-white hover:text-black'}`}
                 disabled={isLoading || selectedTweet.content === ''}
               >Add</button>
             </div>

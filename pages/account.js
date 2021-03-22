@@ -45,31 +45,44 @@ export default function Account () {
   return (
     <Layout>
       {data && <>
-        <div className="flex justify-between w-1/2 my-4">
-          <input
-            className="w-5/6 px-4 py-2 border-0 border-b mr-4 border-gray-200 focus:border-black focus:ring-0"
-            type="text"
-            value={data.user.name}
-            onChange={e => {
-              setIsChanged(true);
-              mutate({
-                user: {
-                  ...data.user,
-                  name: e.target.value.replace(/[^a-z]/gi, '').toLowerCase()
-                }
-              }, false)
-            }}
-          />
+        <div className="container flex mt-4 space-x-4">
+          <aside className="flex-none flex flex-col w-64">
+            {/*  */}
+          </aside>
 
-          <button
-            onClick={() => save()}
-            className={`flex-grow px-4 py-2 text-white border ${isLoading || ! isChanged || data.user.name === '' ? 'text-gray-300 bg-gray-100 border-gray-300 point cursor-default' : 'bg-black border-black hover:bg-white hover:text-black'}`}
-            disabled={isLoading || ! isChanged || data.user.name === ''}
-          >
-            Save</button>
+          <div className="flex-auto flex flex-col space-y-4">
+            <div className="flex">
+              <input
+                className="flex-auto px-4 py-2 border-0 border-b mr-4 border-gray-200 focus:border-black focus:ring-0"
+                type="text"
+                value={data.user.name}
+                onChange={e => {
+                  setIsChanged(true);
+                  mutate({
+                    user: {
+                      ...data.user,
+                      name: e.target.value.replace(/[^a-z]/gi, '').toLowerCase()
+                    }
+                  }, false)
+                }}
+              />
+
+              <button
+                onClick={() => save()}
+                className={`flex-none w-32 px-4 py-2 text-white border ${isLoading || ! isChanged || data.user.name === '' ? 'text-gray-300 bg-gray-100 border-gray-300 point cursor-default' : 'bg-black border-black hover:bg-white hover:text-black'}`}
+                disabled={isLoading || ! isChanged || data.user.name === ''}
+              >
+                Save
+              </button>
+            </div>
+
+            {isError && <div className="px-4 py-2 right-4 bottom-4 text-white bg-gradient-to-r from-red-700 to-red-600">Name already taken...</div>}
+          </div>
+
+          <aside className="flex-none flex flex-col w-64">
+            {/*  */}
+          </aside>
         </div>
-
-        {isError && <div className="w-1/2 px-4 py-2 right-4 bottom-4 text-white bg-gradient-to-r from-red-700 to-red-600">Name already taken...</div>}
       </>}
     </Layout>
   )
